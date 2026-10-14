@@ -1,0 +1,2223 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BG Vanish Pro Studio 8K & Adobe Stock EPS</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+:root{
+  --bg:#f6f7f9;--card:#fff;--ink:#14171c;--mut:#6b7280;--line:#e3e6ea;--acc:#5b4bdb;
+  --g1:#6d5dfc;--g2:#ff5fa2;--g3:#ffb347;--g4:#2dd4bf;--tint:rgba(109,93,252,.08);
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg:#0f1115;--card:#181b21;--ink:#eceef2;--mut:#9aa1ad;--line:#2a2f38;--acc:#8b7dff}
+}
+:root[data-theme="dark"]{--bg:#0f1115;--card:#181b21;--ink:#eceef2;--mut:#9aa1ad;--line:#2a2f38;--acc:#8b7dff}
+*{box-sizing:border-box}
+body{
+  margin:0;color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;
+  background:radial-gradient(900px 480px at 8% -5%,rgba(255,95,162,.20),transparent 60%),
+             radial-gradient(900px 520px at 100% 0%,rgba(109,93,252,.22),transparent 60%),
+             radial-gradient(800px 500px at 50% 110%,rgba(45,212,191,.18),transparent 60%),var(--bg)
+}
+.wrap{max-width:1160px;margin:0 auto;padding:20px 16px 48px}
+h1{
+  font-size:32px;font-weight:800;letter-spacing:-.5px;margin:0 0 4px;display:inline-block;
+  background:linear-gradient(90deg,var(--g1),var(--g2),var(--g3));-webkit-background-clip:text;background-clip:text;color:transparent
+}
+.badge{
+  display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;vertical-align:middle;margin-left:8px;
+  background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;box-shadow:0 2px 10px rgba(109,93,252,.3)
+}
+.sub{color:var(--mut);margin:0 0 18px;font-size:14px}
+.drop{
+  border:2px solid transparent;border-radius:14px;padding:32px 16px;text-align:center;cursor:pointer;transition:.15s;
+  background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(120deg,var(--g1),var(--g2),var(--g3),var(--g4)) border-box;
+  box-shadow:0 8px 28px rgba(109,93,252,.14)
+}
+.drop:hover,.drop.on{transform:translateY(-2px);box-shadow:0 12px 34px rgba(255,95,162,.25)}
+.drop b{display:block;font-size:17px}
+.drop b::before{content:"🖼️ "}
+.panel{
+  display:flex;flex-wrap:wrap;gap:11px 18px;align-items:center;background:var(--card);
+  border:1px solid var(--line);border-left:4px solid var(--g1);border-radius:12px;padding:14px 16px;margin:14px 0;
+  box-shadow:0 6px 24px rgba(109,93,252,.12)
+}
+.panel label{display:flex;align-items:center;gap:6px;font-size:13.5px;cursor:pointer}
+.p-div{width:100%;height:1px;background:var(--line);margin:2px 0}
+.p-tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--acc);background:var(--tint);padding:3px 8px;border-radius:6px}
+select{font:inherit;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:4px 8px;cursor:pointer}
+select:focus{outline:2px solid var(--g1)}
+input[type=range]{accent-color:var(--g2);width:100px;cursor:pointer}
+button{
+  font:inherit;border:0;border-radius:10px;padding:8px 15px;cursor:pointer;color:#fff;font-weight:600;
+  background:linear-gradient(135deg,var(--g1),var(--g2));box-shadow:0 4px 14px rgba(109,93,252,.35);
+  transition:transform .12s,box-shadow .12s
+}
+button:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 8px 20px rgba(255,95,162,.4)}
+button.sec{background:transparent;color:var(--ink);border:1px solid var(--line);box-shadow:none}
+button.sec:hover:not(:disabled){border-color:var(--g1);color:var(--g1)}
+button.sec.on{border-color:var(--acc);color:var(--acc);background:var(--tint)}
+button:disabled{opacity:.45;cursor:default}
+#zipok:not(:disabled){border-color:#10b981;color:#10b981}
+#zipsus:not(:disabled){border-color:#f59e0b;color:#f59e0b}
+#delsus:not(:disabled){border-color:#ef4444;color:#ef4444}
+#warnf.on{background:rgba(245,158,11,.15);border-color:#f59e0b;color:#f59e0b}
+.sp{flex:1}
+.bar{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin:6px 0 4px;display:none}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--g1),var(--g2),var(--g3));transition:width .1s}
+#stat{font-size:13px;color:var(--g1);font-weight:600;min-height:20px;margin-bottom:10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:12px}
+.grid.only .item:not(.warn){display:none}
+.item{
+  background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;
+  transition:transform .15s,box-shadow .15s,border-color .15s;box-shadow:0 2px 10px rgba(20,23,28,.07)
+}
+.item:hover{transform:translateY(-3px);border-color:var(--g1);box-shadow:0 12px 28px rgba(109,93,252,.25)}
+.item.warn{border-color:#f59e0b;box-shadow:0 0 0 2px rgba(245,158,11,.4)}
+.th{aspect-ratio:16/10;background:conic-gradient(#ccc 25%,#fff 0 50%,#ccc 0 75%,#fff 0) 0 0/16px 16px;display:flex;align-items:center;justify-content:center;color:#666;font-size:12px;padding:4px}
+.th img{max-width:100%;max-height:100%;display:block;object-fit:contain}
+.meta{padding:8px 10px;display:flex;gap:8px;align-items:center;font-size:12px;color:var(--mut)}
+.meta span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.meta a{color:#fff;background:linear-gradient(135deg,var(--g1),var(--g2));padding:2px 9px;border-radius:999px;font-size:11px;font-weight:600;text-decoration:none}
+.note{font-size:12.5px;color:var(--mut);margin-top:16px;line-height:1.65;background:var(--tint);border-left:4px solid var(--g4);padding:12px 14px;border-radius:10px}
+.ft{margin-top:28px;padding-top:14px;border-top:1px solid var(--line);text-align:center;color:var(--mut);font-size:13px}
+.ft b{font-weight:800;background:linear-gradient(90deg,var(--g1),var(--g2),var(--g3));-webkit-background-clip:text;background-clip:text;color:transparent}
+#ed{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:99;display:flex;padding:8px}
+#ed[hidden]{display:none}
+.edin{
+  margin:auto;width:min(1080px,100%);max-height:100%;overflow:auto;border-radius:14px;padding:12px;
+  border:2px solid transparent;background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(120deg,var(--g1),var(--g2),var(--g3)) border-box
+}
+.edbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:6px 0}
+.edbar button{padding:6px 11px;font-size:13px}
+.edcv{
+  text-align:center;overflow:hidden;border-radius:10px;border:1px solid var(--line);
+  background:#121418;position:relative;height:min(64vh,580px);display:flex;align-items:center;justify-content:center;
+  user-select:none;touch-action:none
+}
+#e-c{max-width:100%;max-height:100%;cursor:crosshair;transform-origin:center center;will-change:transform}
+#b-ring{
+  position:fixed;pointer-events:none;border:1.5px solid rgba(255,255,255,.9);
+  box-shadow:0 0 0 1px rgba(0,0,0,.85);border-radius:50%;transform:translate(-50%,-50%);
+  z-index:120;display:none
+}
+.z-pill{font-size:12px;font-weight:700;padding:4px 8px;border-radius:6px;background:var(--tint);color:var(--acc);min-width:48px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>BG Vanish</h1><span class="badge">PRO STUDIO 8K · ADOBE STOCK EPS</span>
+<p class="sub">একসাথে ৫০+ ছবি · Adobe Stock-Ready Pure EPS ভেক্টর ইঞ্জিন + সাব-পিক্সেল লেজার আউটলাইন + 8K PNG · ১০০% ব্রাউজারেই প্রসেস</p>
+
+<div class="drop" id="drop"><b>ছবিগুলো এখানে ড্র্যাগ করুন বা ক্লিক করুন</b><span style="color:var(--mut)">JPG / PNG / WEBP / SVG (বারবার ছবি যোগ করা যাবে · Ctrl+V দিয়ে পেস্ট করা যাবে)</span>
+<input type="file" id="file" accept="image/*,.svg" multiple hidden></div>
+
+<div class="panel">
+<span class="p-tag">আউটপুট ও কাটআউট</span>
+<label>Format <select id="fmt">
+  <option value="eps" selected>EPS Vector (Adobe Stock Pure Vector)</option>
+  <option value="png_eps">PNG (8K) + EPS দুটোই (Stock Pack)</option>
+  <option value="png">PNG (8K/4K Studio)</option>
+  <option value="svg">SVG Vector</option>
+  <option value="both">PNG + SVG দুটোই</option>
+  <option value="all3">PNG + EPS + SVG (তিনটিই)</option>
+</select></label>
+<label>Colors <select id="cols"><option value="12">12 (Clean Flat)</option><option value="16" selected>16 (Pro Stock)</option><option value="24">24 (Detailed)</option><option value="32">32</option></select></label>
+<label>PNG size <select id="up"><option value="7680" selected>8K (7680px)</option><option value="3840">4K (3840px)</option><option value="0">Original size</option></select></label>
+<label>Tolerance <input type="range" id="tol" min="10" max="120" value="45"><span id="tolv">45</span></label>
+<label><input type="checkbox" id="smooth" checked> Smooth edge</label>
+<label><input type="checkbox" id="holes" checked> ভিতরের ফাঁকা অংশ মুছুন</label>
+<label>ফাঁক সংবেদনশীলতা <input type="range" id="sens" min="1" max="10" value="6"><span id="sensv">6</span></label>
+<label>Halo ছাঁট <input type="range" id="halo" min="0" max="3" value="1"><span id="halov">1</span></label>
+
+<div class="p-div"></div>
+<span class="p-tag">প্রো কোয়ালিটি ও স্টুডিও ইফেক্ট</span>
+<label>বাইরের outline <select id="oline"><option value="1" selected>খাঁটি কালো (লেজার-স্মুথ)</option><option value="2">আসল রং (লেজার-স্মুথ)</option><option value="0">বন্ধ (শুধু ভেক্টর কাটআউট)</option></select></label>
+<label title="গাঢ় নীল বা রঙিন অংশকে অক্ষুণ্ণ রেখে শুধুমাত্র ছবির ভেতরের আসল কালো কালির রেখাগুলোকে ভেক্টরের মতো ধারালো করে"><input type="checkbox" id="inkvec" checked> ভেতরের কালো লাইন শার্প (Smart Ink Ridge)</label>
+<label title="JPG ছবির দানা ভাব দূর করে রঙ মাখনের মতো মসৃণ করে"><input type="checkbox" id="denoise" checked> JPG নয়েজ ক্লিনার</label>
+<label title="গাঢ় নীল/বাদামী রঙ নষ্ট না করে ছবির রঙকে উজ্জ্বল ও প্রাণবন্ত করে"><input type="checkbox" id="pop" checked> স্টুডিও কালার পপ</label>
+<label>Outline মেরামত <select id="ofix"><option value="1" selected>অটো (ভাঙা বা কাটা হলে)</option><option value="2">সব ছবিতে</option><option value="0">বন্ধ</option></select></label>
+<label>Outline মোটা <input type="range" id="owid" min="0" max="6" value="0"><span id="owidv">অটো</span></label>
+<label>স্টিকার বর্ডার <select id="stk"><option value="0" selected>বন্ধ</option><option value="1">সাদা স্টিকার বর্ডার</option><option value="2">সাদা বর্ডার + শ্যাডো</option><option value="3">শুধু ড্রপ শ্যাডো</option></select></label>
+<label>স্টিকার পুরুত্ব <input type="range" id="stkw" min="1" max="10" value="4"><span id="stkwv">4</span></label>
+<label>Crop ও মার্জিন <select id="pad"><option value="-1">Crop বন্ধ (আসল মাপ)</option><option value="0">Crop (0% গ্যাপ)</option><option value="4" selected>Crop + 4% Safe Margin</option><option value="8">Crop + 8% Margin</option><option value="100">1:1 Square Canvas (প্রিন্ট/আইকন)</option></select></label>
+<label><input type="checkbox" id="vpng"> PNG ভেক্টর থেকে</label>
+
+<div class="p-div"></div>
+<button class="sec" id="warnf">⚠️ শুধু সন্দেহজনক</button>
+<button class="sec" id="zipok" disabled>ঠিক ছবির ZIP</button>
+<button class="sec" id="zipsus" disabled>⚠️ ZIP</button>
+<button class="sec" id="delsus" disabled>⚠️ বাদ দিন</button>
+<button class="sec" id="clearall" disabled>সব মুছুন</button>
+<div class="sp"></div>
+<button class="sec" id="redo" disabled>আবার প্রসেস</button>
+<button id="zip" disabled>ZIP ডাউনলোড</button>
+</div>
+
+<div class="bar" id="bar"><i id="barin"></i></div>
+<div id="stat"></div>
+<div class="grid" id="grid"></div>
+<p class="note">• <b>Adobe Stock-Ready Pure EPS Vector (`%!PS-Adobe-3.0 EPSF-3.0`):</b> আমাদের EPS ইঞ্জিন ১০০% পিওর ক্লোজড কিউবিক বেজিয়ার পাথ (`curveto` ও `eofill`) তৈরি করে। এতে কোনো র‍্যাস্টার ইমেজ, ওপেন পাথ বা স্ট্রোকের ত্রুটি থাকে না এবং <b>Ink-Sandwich আর্কিটেকচার ও সাব-পিক্সেল ইন্টারপোলেশনের</b> কারণে প্রতিটি লাইন ও রঙের সীমানা থাকে ব্লেডের মতো ধারালো ও ফাটলমুক্ত—যা সরাসরি Adobe Stock, Shutterstock ও Freepik-এ সাবমিট করার উপযোগী।<br>
+• <b>Smart Subject-Aware Erase & Cut-Edge Auto Seal:</b> এডিটরে ক্লিক বা ব্রাশ দিয়ে কোনো অংশ মুছলে তা মূল ছবির কালো আউটলাইন ট্র্যাক করে নিজে থেকেই আউটলাইনের কিনারার সব খাঁজ, কাঁটা (hooks/spurs) ও হলুদ/কমলা দাগ পরিষ্কার করে এবং কাটা জায়গায় নতুন কালো আউটলাইন টেনে নিখুঁতভাবে সিল করে দেয়।<br>
+• <b>প্রো এডিটর ও শর্টকাট:</b> যেকোনো ছবিতে ক্লিক করে এডিটরে ঢুকুন। মাউস হুইল বা <b>➕/➖</b> বাটনে জুম করুন, <b>Spacebar</b> চেপে ধরে ছবি সরান, <b>[ / ]</b> দিয়ে ব্রাশ ছোট-বড় করুন এবং <b>Ctrl+Z / Ctrl+Y</b> দিয়ে তাৎক্ষণিক Undo/Redo করুন।</p>
+<footer class="ft">BG Vanish Pro Studio 8K · Created by <b>Arafat Hossain</b></footer>
+</div>
+
+<div id="b-ring"></div>
+<div id="ed" hidden><div class="edin">
+<div class="edbar">
+  <button class="sec on" id="e-m1" title="ক্লিক করে একই রঙের অংশ স্মার্টভাবে মুছুন">ক্লিকে মুছুন</button>
+  <button class="sec" id="e-m3" title="হাতে টেনে যেকোনো দাগ বা অংশ মুছুন">ব্রাশ (মুছুন)</button>
+  <button class="sec" id="e-m2" title="ভুল করে মুছে যাওয়া অংশ ফেরত আনুন">ব্রাশ (ফেরত)</button>
+  <button class="sec" id="e-m4" title="জুম অবস্থায় ছবি টেনে সরান (অথবা Spacebar চেপে ধরুন)">✋ প্যান</button>
+  <label style="display:flex;align-items:center;gap:4px;font-size:13.5px" title="চালু থাকলে কালো আউটলাইন বাঁচিয়ে মুছবে এবং কাটা প্রান্ত অটো-সিল করবে"><input type="checkbox" id="e-auto" checked> অটো বাউন্ডারি</label>
+  <label style="display:flex;align-items:center;gap:4px;font-size:13.5px" title="সন্দেহজনক কমলা/হলুদ মার্ক দেখান বা লুকান"><input type="checkbox" id="e-showsus" checked> কমলা চিহ্ন</label>
+  <button class="sec" id="e-all" title="সব কমলা চিহ্নিত ফাঁক এক ক্লিকে মুছুন">সব কমলা মুছুন</button>
+  <label style="font-size:13px">ব্রাশ <input type="range" id="e-r" min="2" max="90" value="18" style="width:80px"><span id="e-rv" style="min-width:22px;display:inline-block">18</span></label>
+  <select id="e-bg"><option value="chk">চেকার</option><option value="#00c853">সবুজ</option><option value="#1b1b1b">গাঢ়</option><option value="#ffffff">সাদা</option><option value="#ff00ff">ম্যাজেন্টা</option></select>
+  <button class="sec" id="e-zout" title="জুম আউট">➖</button>
+  <span class="z-pill" id="e-zv">100%</span>
+  <button class="sec" id="e-zin" title="জুম ইন">➕</button>
+  <button class="sec" id="e-zrst" title="জুম রিসেট">১:১</button>
+  <button class="sec" id="e-u" title="Undo (Ctrl+Z)">↶</button>
+  <button class="sec" id="e-re" title="Redo (Ctrl+Y)">↷</button>
+  <span class="sp"></span>
+  <button class="sec" id="e-x">বাতিল</button>
+  <button id="e-ok">সম্পন্ন</button>
+</div>
+<div class="edcv" id="e-wrap"><canvas id="e-c"></canvas></div>
+<div class="edbar"><span>আগে</span><input type="range" id="e-cmp" min="0" max="100" value="100" style="flex:1;width:auto"><span>পরে</span></div>
+<div id="e-t" class="note" style="margin:4px 0 0"></div>
+</div></div>
+
+<script>
+// Edge-Preserving Surface Blur (Bilateral filter) + Discontinuity-Free Studio Color Pop
+function studioEnhance(d,w,h,doDenoise,doPop){
+  const N=w*h;
+  if(doDenoise){
+    const src=new Uint8ClampedArray(d);
+    const TH=26;
+    for(let y=1;y<h-1;y++){
+      const row=y*w;
+      for(let x=1;x<w-1;x++){
+        const p=row+x,i=p*4;
+        if(src[i+3]<16)continue;
+        const r0=src[i],g0=src[i+1],b0=src[i+2];
+        const lum0=0.299*r0+0.587*g0+0.114*b0;
+        const sat0=Math.max(r0,g0,b0)-Math.min(r0,g0,b0);
+        if(lum0<30&&sat0<18)continue;
+        let sr=r0*2,sg=g0*2,sb=b0*2,wt=2;
+        const nb=[p-1,p+1,p-w,p+w,p-w-1,p-w+1,p+w-1,p+w+1];
+        for(let k=0;k<8;k++){
+          const j=nb[k]*4;
+          if(src[j+3]<16)continue;
+          const ad=Math.abs(src[j]-r0)+Math.abs(src[j+1]-g0)+Math.abs(src[j+2]-b0);
+          if(ad<TH){
+            sr+=src[j];sg+=src[j+1];sb+=src[j+2];wt++;
+          }
+        }
+        if(wt>2){
+          d[i]=(sr/wt+0.5)|0;
+          d[i+1]=(sg/wt+0.5)|0;
+          d[i+2]=(sb/wt+0.5)|0;
+        }
+      }
+    }
+  }
+  if(doPop){
+    for(let p=0;p<N;p++){
+      const i=p*4;
+      if(d[i+3]<16)continue;
+      let r=d[i],g=d[i+1],b=d[i+2];
+      const lum=0.299*r+0.587*g+0.114*b;
+      const mx=Math.max(r,g,b),mn=Math.min(r,g,b),sat=mx-mn;
+      if(lum<32&&sat<16){
+        const t=(lum/32);
+        const sWeight=(16-sat)/16;
+        const f=1-0.35*(1-t)*sWeight;
+        d[i]=(r*f+0.5)|0;d[i+1]=(g*f+0.5)|0;d[i+2]=(b*f+0.5)|0;
+        continue;
+      }
+      if(sat>16&&lum>28&&lum<242){
+        const boost=1.10;
+        r=lum+(r-lum)*boost;
+        g=lum+(g-lum)*boost;
+        b=lum+(b-lum)*boost;
+        d[i]=r<0?0:r>255?255:(r+0.5)|0;
+        d[i+1]=g<0?0:g>255?255:(g+0.5)|0;
+        d[i+2]=b<0?0:b>255?255:(b+0.5)|0;
+      }
+    }
+  }
+}
+
+//CORE-START
+function removeBg(d,w,h,o){
+  const N=w*h,R=[],G=[],B=[],PX=[],PY=[];
+  const smp=(x,y)=>{
+    const i=(y*w+x)*4;
+    if(d[i+3]>=128){R.push(d[i]);G.push(d[i+1]);B.push(d[i+2]);PX.push(x/w);PY.push(y/h)}
+  };
+  const stepX=Math.max(1,Math.floor(w/180)),stepY=Math.max(1,Math.floor(h/180));
+  for(let x=0;x<w;x+=stepX){smp(x,0);smp(x,h-1)}
+  for(let y=0;y<h;y+=stepY){smp(0,y);smp(w-1,y)}
+
+  let m0=[255,255,255];
+  if(R.length){
+    let bestCnt=-1,bestIdx=0;
+    const rad2=Math.max(400,o.tol*o.tol);
+    const stride=Math.max(1,R.length>>6);
+    for(let i=0;i<R.length;i+=stride){
+      let cnt=0;
+      const r0=R[i],g0=G[i],b0=B[i];
+      for(let j=0;j<R.length;j++){
+        const dr=R[j]-r0,dg=G[j]-g0,db=B[j]-b0;
+        if(dr*dr+dg*dg+db*db<=rad2)cnt++;
+      }
+      if(cnt>bestCnt){bestCnt=cnt;bestIdx=i}
+    }
+    const cR=[],cG=[],cB=[];
+    const r0=R[bestIdx],g0=G[bestIdx],b0=B[bestIdx];
+    for(let j=0;j<R.length;j++){
+      const dr=R[j]-r0,dg=G[j]-g0,db=B[j]-b0;
+      if(dr*dr+dg*dg+db*db<=rad2*1.5){cR.push(R[j]);cG.push(G[j]);cB.push(B[j])}
+    }
+    const med=a=>a.length?a.slice().sort((p,q)=>p-q)[a.length>>1]:255;
+    m0=[med(cR),med(cG),med(cB)];
+  }
+
+  const T2=o.tol*o.tol;
+  let C=[[m0[0],0,0,0,0,0],[m0[1],0,0,0,0,0],[m0[2],0,0,0,0,0]];
+  const F=(x,y)=>[1,x,y,x*x,x*y,y*y];
+  const pv=(c,x,y)=>c[0]+c[1]*x+c[2]*y+c[3]*x*x+c[4]*x*y+c[5]*y*y;
+  const ix=[];
+  for(let k=0;k<R.length;k++){const a=R[k]-m0[0],b=G[k]-m0[1],c=B[k]-m0[2];if(a*a+b*b+c*c<=T2)ix.push(k)}
+  if(ix.length>40){
+    const A=Array.from({length:6},()=>new Array(6).fill(0)),rhs=[[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0]];
+    for(const k of ix){const f=F(PX[k],PY[k]);
+      for(let i=0;i<6;i++){for(let j=0;j<6;j++)A[i][j]+=f[i]*f[j];rhs[0][i]+=f[i]*R[k];rhs[1][i]+=f[i]*G[k];rhs[2][i]+=f[i]*B[k]}}
+    const solve=r=>{const M=A.map((row,i)=>row.concat([r[i]]));
+      for(let c=0;c<6;c++){let pv2=c;for(let i=c+1;i<6;i++)if(Math.abs(M[i][c])>Math.abs(M[pv2][c]))pv2=i;
+        if(Math.abs(M[pv2][c])<1e-9)return null;[M[c],M[pv2]]=[M[pv2],M[c]];
+        for(let i=0;i<6;i++)if(i!==c){const q=M[i][c]/M[c][c];for(let j=c;j<7;j++)M[i][j]-=q*M[c][j]}}
+      return M.map((row,i)=>row[6]/row[i]);};
+    const nc=rhs.map(solve);
+    if(nc.every(Boolean)){
+      let sane=true;
+      for(let gx=0;gx<=4;gx++)for(let gy=0;gy<=4;gy++)for(let ch=0;ch<3;ch++)
+        if(Math.abs(pv(nc[ch],gx/4,gy/4)-m0[ch])>o.tol)sane=false;
+      if(sane)C=nc;
+    }
+  }
+  const bgSat=Math.max(m0[0],m0[1],m0[2])-Math.min(m0[0],m0[1],m0[2]);
+  const dist2=p=>{
+    const i=p*4;
+    if(d[i+3]<16)return 0;
+    const x=(p%w)/w,y=((p/w)|0)/h;
+    const br=pv(C[0],x,y),bg=pv(C[1],x,y),bb=pv(C[2],x,y);
+    const dr=d[i]-br,dg=d[i+1]-bg,db=d[i+2]-bb;
+    const dL=0.299*dr+0.587*dg+0.114*db;
+    const dCr=dr-dL,dCb=db-dL;
+    const chromaBoost=bgSat<25?1.65:1.15;
+    return dr*dr+dg*dg+db*db+chromaBoost*(dCr*dCr+dCb*dCb);
+  };
+  const mask=new Uint8Array(N),st=new Int32Array(N);let sp=0;
+  const seed=p=>{if(!mask[p]&&(d[p*4+3]<16||dist2(p)<=T2)){mask[p]=1;st[sp++]=p}};
+  const grow=()=>{while(sp){const p=st[--sp],x=p%w;
+    if(x>0)seed(p-1);if(x<w-1)seed(p+1);if(p>=w)seed(p-w);if(p<N-w)seed(p+w)}};
+  for(let x=0;x<w;x++){seed(x);seed((h-1)*w+x)}
+  for(let y=0;y<h;y++){seed(y*w);seed(y*w+w-1)}
+  for(let p=0;p<N;p++)if(d[p*4+3]<16)seed(p);
+  grow();
+
+  const bgL=0.299*m0[0]+0.587*m0[1]+0.114*m0[2];
+  const lumP=p=>{const i=p*4;return 0.299*d[i]+0.587*d[i+1]+0.114*d[i+2]};
+  const satP=p=>{const i=p*4,r=d[i],g=d[i+1],b=d[i+2];return Math.max(r,g,b)-Math.min(r,g,b)};
+  const isInk=p=>lumP(p)<Math.min(70,bgL*0.48)&&satP(p)<45;
+  const nb4=p=>{const x=p%w;return [x>0?p-1:-1,x<w-1?p+1:-1,p>=w?p-w:-1,p<N-w?p+w:-1]};
+
+  {
+    const crevT2=Math.max(T2*3.6,3600);
+    for(let pass=0;pass<6;pass++){
+      const add=[];
+      for(let y=1;y<h-1;y++){
+        const row=y*w;
+        for(let x=1;x<w-1;x++){
+          const p=row+x;
+          if(mask[p]||isInk(p))continue;
+          const mb=mask[p-1]+mask[p+1]+mask[p-w]+mask[p+w];
+          if(!mb)continue;
+          const d2=dist2(p),sat=satP(p);
+          let inkNb=0;
+          if(isInk(p-1))inkNb++;if(isInk(p+1))inkNb++;if(isInk(p-w))inkNb++;if(isInk(p+w))inkNb++;
+          if(isInk(p-w-1))inkNb++;if(isInk(p-w+1))inkNb++;if(isInk(p+w-1))inkNb++;if(isInk(p+w+1))inkNb++;
+          if((d2<=crevT2&&sat<45)||(inkNb>=2&&mb>=1&&sat<48&&lumP(p)>bgL*0.50)){
+            add.push(p);
+          }
+        }
+      }
+      if(!add.length)break;
+      for(const p of add)mask[p]=1;
+    }
+  }
+
+  let mc=0;for(let p=0;p<N;p++)if(mask[p])mc++;
+  const clamp=v=>v<0?0:v>1?1:v;
+  let gaps=0;const sus=[];
+  if(o.holes){
+    const RD=Math.max(8,Math.round(0.06*Math.max(w,h))),dm=new Int16Array(N).fill(RD+1),q=new Int32Array(N);
+    let qh=0,qt=0;
+    for(let p=0;p<N;p++)if(mask[p]){dm[p]=0;const x=p%w;if((x>0&&!mask[p-1])||(x<w-1&&!mask[p+1])||(p>=w&&!mask[p-w])||(p<N-w&&!mask[p+w]))q[qt++]=p}
+    while(qh<qt){const p=q[qh++],dv=dm[p];if(dv>=RD)continue;const nn=nb4(p);
+      for(let k=0;k<4;k++){const r=nn[k];if(r>=0&&dm[r]>dv+1){dm[r]=dv+1;q[qt++]=r}}}
+    const seen=new Uint8Array(N),lst=new Int32Array(N),maxSz=(N-mc)*0.4,minSz=Math.max(60,N*0.0003);
+    const ct=o.tol*0.9,c2=ct*ct,hi=0.88-0.03*o.sens,lo=hi-0.22;
+    for(let s=0;s<N;s++){
+      if(mask[s]||seen[s]||dist2(s)>c2)continue;
+      let n=0,sum=0,dmin=RD+1;seen[s]=1;st[sp++]=s;
+      while(sp){const p=st[--sp];lst[n++]=p;sum+=Math.sqrt(dist2(p));if(dm[p]<dmin)dmin=dm[p];
+        const nn=nb4(p);for(let k=0;k<4;k++){const r=nn[k];if(r>=0&&!mask[r]&&!seen[r]&&dist2(r)<=c2){seen[r]=1;st[sp++]=r}}}
+      if(n<25){
+        let inkWall=0,totWall=0;
+        for(let k=0;k<n;k++){
+          const nn=nb4(lst[k]);
+          for(let j=0;j<4;j++){const r=nn[j];if(r>=0&&!seen[r]){totWall++;if(mask[r]||isInk(r))inkWall++}}
+        }
+        if(totWall>0&&inkWall/totWall>=0.75&&satP(lst[0])<45&&lumP(lst[0])>bgL*0.55){
+          for(let k=0;k<n;k++)mask[lst[k]]=1;
+        }
+        continue;
+      }
+      if(n>maxSz)continue;
+      let bt=0,be=0;
+      for(let k=0;k<n;k++){const nn=nb4(lst[k]);for(let j=0;j<4;j++){const r=nn[j];if(r>=0&&!mask[r]&&!seen[r]){bt++;if(dist2(r)>c2)be++}}}
+      const Cs=clamp(1-(sum/n)/ct),Es=bt?be/bt:1,Ps=clamp(1-(dmin-1)/RD),Ss=n>=minSz?1:0.6;
+      const conf=0.3*Cs+0.25*Es+0.35*Ps+0.1*Ss;
+      if(conf>=hi){
+        gaps++;
+        for(let k=0;k<n;k++){mask[lst[k]]=1;st[sp++]=lst[k]}
+        grow();
+      }else if(conf>=lo&&sus.length<40)sus.push({p:lst[0],n,conf,px:lst.slice(0,n)});
+    }
+  }
+
+  {
+    for(let pass=0;pass<3;pass++){
+      const toBg=[],toFg=[];
+      for(let y=1;y<h-1;y++){
+        const row=y*w;
+        for(let x=1;x<w-1;x++){
+          const p=row+x;
+          const m8=mask[p-1]+mask[p+1]+mask[p-w]+mask[p+w]+mask[p-w-1]+mask[p-w+1]+mask[p+w-1]+mask[p+w+1];
+          if(!mask[p]&&m8>=5)toBg.push(p);
+          else if(mask[p]&&m8<=2&&dist2(p)>T2*2.2)toFg.push(p);
+        }
+      }
+      for(const p of toBg)mask[p]=1;
+      for(const p of toFg)mask[p]=0;
+    }
+
+    const sn=new Uint8Array(N),minF=Math.max(36,Math.round(N*0.00004));
+    for(let s=0;s<N;s++){
+      if(mask[s]||sn[s])continue;
+      let n=0;const lf=[];sn[s]=1;st[sp++]=s;
+      while(sp){
+        const p=st[--sp];n++;if(lf.length<=minF)lf.push(p);
+        const nn=nb4(p);for(let k=0;k<4;k++){const r=nn[k];if(r>=0&&!mask[r]&&!sn[r]){sn[r]=1;st[sp++]=r}}
+      }
+      if(n<minF)for(const p of lf)mask[p]=1;
+    }
+  }
+
+  if(o.halo>0){
+    const nbm=p=>{const x=p%w;return (x>0&&mask[p-1])||(x<w-1&&mask[p+1])||(p>=w&&mask[p-w])||(p<N-w&&mask[p+w])};
+    const lt=o.tol*(1.35+0.2*o.halo),l2=lt*lt;
+    for(let it=0;it<o.halo;it++){
+      const ad=[];
+      for(let p=0;p<N;p++)if(!mask[p]&&nbm(p)&&(!isInk(p)||dist2(p)<=T2*1.6)&&dist2(p)<=l2)ad.push(p);
+      for(const p of ad)mask[p]=1;
+    }
+    for(let pass=0;pass<2;pass++){
+      const sp2=[];
+      for(let y=1;y<h-1;y++)for(let x=1;x<w-1;x++){
+        const p=y*w+x;if(mask[p])continue;
+        const m8=mask[p-1]+mask[p+1]+mask[p-w]+mask[p+w]+mask[p-w-1]+mask[p-w+1]+mask[p+w-1]+mask[p+w+1];
+        if(m8>=5)sp2.push(p);
+      }
+      for(const p of sp2)mask[p]=1;
+    }
+  }
+
+  {
+    const bDist=new Uint8Array(N).fill(255),q=new Int32Array(N);let qh=0,qt=0;
+    for(let p=0;p<N;p++)if(mask[p]){
+      const x=p%w;
+      if((x>0&&!mask[p-1])||(x<w-1&&!mask[p+1])||(p>=w&&!mask[p-w])||(p<N-w&&!mask[p+w])){bDist[p]=0;q[qt++]=p}
+    }
+    while(qh<qt){
+      const p=q[qh++],dv=bDist[p];if(dv>=2)continue;
+      const nn=nb4(p);for(let k=0;k<4;k++){const r=nn[k];if(r>=0&&!mask[r]&&bDist[r]===255){bDist[r]=dv+1;q[qt++]=r}}
+    }
+    let ir=0,ig=0,ib=0,ic=0;
+    for(let i=0;i<qt;i++){
+      const p=q[i];if(bDist[p]>0&&lumP(p)<36&&satP(p)<30){const k=p*4;ir+=d[k];ig+=d[k+1];ib+=d[k+2];ic++}
+    }
+    if(ic>20){
+      ir=Math.round(ir/ic);ig=Math.round(ig/ic);ib=Math.round(ib/ic);
+      for(let i=0;i<qt;i++){
+        const p=q[i];if(bDist[p]===0)continue;
+        if(lumP(p)>bgL*0.45&&dist2(p)<T2*2.8){
+          const x=p%w,y=(p/w)|0;
+          let nearInk=false;
+          for(let dy=-2;dy<=2&&!nearInk;dy++){
+            const yy=y+dy;if(yy<0||yy>=h)continue;
+            for(let dx=-2;dx<=2;dx++){
+              const xx=x+dx;if(xx<0||xx>=w)continue;
+              const q2=yy*w+xx;
+              if(!mask[q2]&&lumP(q2)<36&&satP(q2)<30){nearInk=true;break}
+            }
+          }
+          if(nearInk){
+            const k=p*4;
+            d[k]=ir;d[k+1]=ig;d[k+2]=ib;
+          }
+        }
+      }
+    }
+  }
+
+  if(o.smooth){
+    const ring=new Uint8Array(N);
+    const nb=(p,x,f)=>(x>0&&f(p-1))||(x<w-1&&f(p+1))||(p>=w&&f(p-w))||(p<N-w&&f(p+w));
+    const m=q=>mask[q],r1=q=>ring[q]===1,r2=q=>ring[q]===2;
+    for(let p=0;p<N;p++)if(!mask[p]&&nb(p,p%w,m))ring[p]=1;
+    for(let p=0;p<N;p++)if(!mask[p]&&!ring[p]&&nb(p,p%w,r1))ring[p]=2;
+    for(let p=0;p<N;p++)if(!mask[p]&&!ring[p]&&nb(p,p%w,r2))ring[p]=3;
+
+    const copyR=new Uint8Array(N),copyG=new Uint8Array(N),copyB=new Uint8Array(N),hasC=new Uint8Array(N);
+    for(let p=0;p<N;p++)if(ring[p]){
+      const x=p%w,y=(p/w)|0;let bq=-1,bd=99;
+      for(let dy=-3;dy<=3;dy++){const yy=y+dy;if(yy<0||yy>=h)continue;
+        for(let dx=-3;dx<=3;dx++){const xx=x+dx;if(xx<0||xx>=w)continue;const q=yy*w+xx,e2=dx*dx+dy*dy;
+          if(!mask[q]&&!ring[q]&&e2<bd){bd=e2;bq=q}}}
+      if(bq>=0){
+        const i=p*4,j=bq*4;
+        const lumI=0.299*d[i]+0.587*d[i+1]+0.114*d[i+2];
+        const lumJ=0.299*d[j]+0.587*d[j+1]+0.114*d[j+2];
+        if(lumI>lumJ+12&&dist2(p)<T2*2.2){
+          copyR[p]=d[j];copyG[p]=d[j+1];copyB[p]=d[j+2];hasC[p]=1;
+        }
+      }
+    }
+    for(let p=0;p<N;p++)if(hasC[p]){
+      const i=p*4;d[i]=copyR[p];d[i+1]=copyG[p];d[i+2]=copyB[p];
+    }
+
+    const A=new Float32Array(N),T=new Float32Array(N);
+    for(let p=0;p<N;p++)A[p]=mask[p]?0:1;
+    for(let pass=0;pass<4;pass++){
+      for(let y=0;y<h;y++){
+        const o2=y*w;
+        for(let x=0;x<w;x++){
+          const p=o2+x;
+          T[p]=(A[x>0?p-1:p]+2*A[p]+A[x<w-1?p+1:p])*0.25;
+        }
+      }
+      for(let y=0;y<h;y++){
+        for(let x=0;x<w;x++){
+          const p=y*w+x;
+          A[p]=(T[y>0?p-w:p]+2*T[p]+T[y<h-1?p+w:p])*0.25;
+        }
+      }
+    }
+    for(let p=0;p<N;p++){
+      const i=p*4;
+      if(A[p]<=0.28){mask[p]=1;d[i+3]=0;continue}
+      if(A[p]<0.96){
+        let t=Math.max(0,Math.min(1,(A[p]-0.28)/0.65));
+        t=t*t*(3-2*t);
+        d[i+3]=Math.round(255*t);
+      }else if(!mask[p]){
+        d[i+3]=255;
+      }
+    }
+  }
+
+  let x0=w,y0=h,x1=-1,y1=-1;
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){
+    const p=y*w+x;
+    if(mask[p]&&!o.smooth)d[p*4+3]=0;
+    if(d[p*4+3]>8){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}
+  }
+  if(x1<x0){x0=0;y0=0;x1=w-1;y1=h-1}
+  return [x0,y0,x1,y1,gaps,0,sus];
+}
+//CORE-END
+
+// Geometry helper: returns structured smoothed ring segments (compatible with both SVG and PostScript/EPS Cubic Beziers)
+function buildSmoothRingGeometry(P,mode,scaleX=1,scaleY=1){
+  if(P.length<6)return null;
+  const isSil=mode===true||mode==='sil';
+  const isFill=mode==='fill';
+  const rdp=(pts,eps)=>{
+    const n=pts.length,keep=new Uint8Array(n);keep[0]=keep[n-1]=1;const st=[[0,n-1]];
+    while(st.length){
+      const [a,b]=st.pop();let md=0,mi=-1;
+      const ax=pts[a][0],ay=pts[a][1],dx=pts[b][0]-ax,dy=pts[b][1]-ay,L=Math.hypot(dx,dy)||1;
+      for(let i=a+1;i<b;i++){const dd=Math.abs((pts[i][0]-ax)*dy-(pts[i][1]-ay)*dx)/L;if(dd>md){md=dd;mi=i}}
+      if(md>eps){keep[mi]=1;st.push([a,mi],[mi,b])}
+    }
+    return pts.filter((_,i)=>keep[i]);
+  };
+
+  const n0=P.length;
+  const rawCorner=new Uint8Array(n0);
+  if(n0>=12){
+    for(const st of [3,6]){
+      const s=Math.min(st,Math.max(2,n0>>4));
+      for(let i=0;i<n0;i++){
+        const a=P[(i-s+n0)%n0],v=P[i],b=P[(i+s)%n0];
+        const ux=v[0]-a[0],uy=v[1]-a[1],vx=b[0]-v[0],vy=b[1]-v[1];
+        const l1=Math.hypot(ux,uy),l2=Math.hypot(vx,vy);
+        if(l1>1.5&&l2>1.5){
+          const cos=(ux*vx+uy*vy)/(l1*l2);
+          if(cos<0.48){
+            rawCorner[i]=1;
+            rawCorner[(i-1+n0)%n0]=1;
+            rawCorner[(i+1)%n0]=1;
+          }
+        }
+      }
+    }
+  }
+
+  let A=P.map(pt=>[pt[0],pt[1]]);
+  const iters=isSil?10:isFill?8:5;
+  for(let it=0;it<iters;it++){
+    const B=new Array(n0);
+    for(let i=0;i<n0;i++){
+      if(rawCorner[i]){
+        B[i]=[A[i][0],A[i][1]];
+      }else{
+        const p2=A[(i+n0-2)%n0],p1=A[(i+n0-1)%n0],cur=A[i],n1=A[(i+1)%n0],n2=A[(i+2)%n0];
+        B[i]=[
+          0.1*p2[0]+0.25*p1[0]+0.3*cur[0]+0.25*n1[0]+0.1*n2[0],
+          0.1*p2[1]+0.25*p1[1]+0.3*cur[1]+0.25*n1[1]+0.1*n2[1]
+        ];
+      }
+    }
+    A=B;
+  }
+
+  let fi=0,fd=0;
+  for(let i=1;i<A.length;i++){const e=(A[i][0]-A[0][0])**2+(A[i][1]-A[0][1])**2;if(e>fd){fd=e;fi=i}}
+  const eps=isSil?1.15:isFill?0.92:0.58;
+  let ring=rdp(A.slice(0,fi+1),eps).concat(rdp(A.slice(fi).concat([A[0]]),eps).slice(1,-1));
+  if(ring.length<3)return null;
+
+  const m=ring.length;
+  const isCorner=new Uint8Array(m);
+  for(let i=0;i<m;i++){
+    const a=ring[(i+m-1)%m],v=ring[i],b=ring[(i+1)%m];
+    const ux=v[0]-a[0],uy=v[1]-a[1],vx=b[0]-v[0],vy=b[1]-v[1];
+    const l1=Math.hypot(ux,uy),l2=Math.hypot(vx,vy);
+    if(l1>0&&l2>0){
+      const cos=(ux*vx+uy*vy)/(l1*l2);
+      if(cos<0.42&&(l1>2.0||l2>2.0))isCorner[i]=1;
+    }
+  }
+
+  const nextR=new Array(m);
+  for(let i=0;i<m;i++){
+    let pt;
+    if(isCorner[i]){pt=ring[i]}
+    else{
+      const a=ring[(i+m-1)%m],v=ring[i],b=ring[(i+1)%m];
+      pt=[0.2*a[0]+0.6*v[0]+0.2*b[0],0.2*a[1]+0.6*v[1]+0.2*b[1]];
+    }
+    nextR[i]=[pt[0]*scaleX,pt[1]*scaleY];
+  }
+  return {ring:nextR,isCorner};
+}
+
+function buildSmoothRingPath(P,mode,scaleX=1,scaleY=1){
+  const g=buildSmoothRingGeometry(P,mode,scaleX,scaleY);
+  if(!g)return '';
+  const {ring,isCorner}=g,m=ring.length;
+  const f=n=>Math.round(n*100)/100;
+  const mid=(a,b)=>[(a[0]+b[0])*0.5,(a[1]+b[1])*0.5];
+  const s0=isCorner[0]?ring[0]:mid(ring[m-1],ring[0]);
+  let d2='M'+f(s0[0])+' '+f(s0[1]);
+  for(let i=0;i<m;i++){
+    const v=ring[i],nxt=ring[(i+1)%m];
+    if(isCorner[i]){
+      d2+='L'+f(v[0])+' '+f(v[1]);
+      if(!isCorner[(i+1)%m]){const q=mid(v,nxt);d2+='L'+f(q[0])+' '+f(q[1])}
+    }else{
+      const o2=isCorner[(i+1)%m]?nxt:mid(v,nxt);
+      d2+='Q'+f(v[0])+' '+f(v[1])+' '+f(o2[0])+' '+f(o2[1]);
+    }
+  }
+  return d2+'Z';
+}
+
+// Converts Quadratic Bezier & Line segments into exact PostScript Level-3 Cubic Bezier commands
+function buildSmoothRingEPS(P,mode,ox,oy,H,scaleX=1,scaleY=1){
+  const g=buildSmoothRingGeometry(P,mode,scaleX,scaleY);
+  if(!g)return '';
+  const {ring,isCorner}=g,m=ring.length;
+  const f=n=>Math.round(n*100)/100;
+  const tx=x=>f(x-ox),ty=y=>f(H-(y-oy));
+  const mid=(a,b)=>[(a[0]+b[0])*0.5,(a[1]+b[1])*0.5];
+  const s0=isCorner[0]?ring[0]:mid(ring[m-1],ring[0]);
+  let curX=s0[0],curY=s0[1];
+  let ps=tx(curX)+' '+ty(curY)+' m\n';
+  for(let i=0;i<m;i++){
+    const v=ring[i],nxt=ring[(i+1)%m];
+    if(isCorner[i]){
+      ps+=tx(v[0])+' '+ty(v[1])+' l\n';
+      curX=v[0];curY=v[1];
+      if(!isCorner[(i+1)%m]){
+        const q=mid(v,nxt);
+        ps+=tx(q[0])+' '+ty(q[1])+' l\n';
+        curX=q[0];curY=q[1];
+      }
+    }else{
+      const o2=isCorner[(i+1)%m]?nxt:mid(v,nxt);
+      const c1x=curX+(2/3)*(v[0]-curX),c1y=curY+(2/3)*(v[1]-curY);
+      const c2x=o2[0]+(2/3)*(v[0]-o2[0]),c2y=o2[1]+(2/3)*(v[1]-o2[1]);
+      ps+=tx(c1x)+' '+ty(c1y)+' '+tx(c2x)+' '+ty(c2y)+' '+tx(o2[0])+' '+ty(o2[1])+' c\n';
+      curX=o2[0];curY=o2[1];
+    }
+  }
+  ps+='cp\n';
+  return ps;
+}
+
+// Smart Local-Ridge Interior Ink Vectorizer
+function interiorInkPath(d,w,h){
+  const N=w*h,W1=w+1,out=new Uint8Array(W1*(h+1)*2);
+  const nearBg=new Uint8Array(N);
+  for(let y=0;y<h;y++){
+    const row=y*w;
+    for(let x=0;x<w;x++){
+      const p=row+x;
+      if(d[p*4+3]<210){
+        for(let dy=-2;dy<=2;dy++){
+          const yy=y+dy;if(yy<0||yy>=h)continue;
+          const r2=yy*w;
+          for(let dx=-2;dx<=2;dx++){
+            const xx=x+dx;if(xx>=0&&xx<w)nearBg[r2+xx]=1;
+          }
+        }
+      }
+    }
+  }
+
+  const L=new Float32Array(N),S=new Uint8Array(N);
+  for(let p=0;p<N;p++){
+    const i=p*4;
+    if(d[i+3]<210){L[p]=255;continue}
+    const r=d[i],g=d[i+1],b=d[i+2];
+    L[p]=0.299*r+0.587*g+0.114*b;
+    S[p]=Math.max(r,g,b)-Math.min(r,g,b);
+  }
+
+  const F=new Float32Array(N);
+  let inkCnt=0,ir=0,ig=0,ib=0;
+  for(let y=4;y<h-4;y++){
+    const row=y*w;
+    for(let x=4;x<w-4;x++){
+      const p=row+x;
+      if(nearBg[p])continue;
+      const lum=L[p],sat=S[p];
+      if(lum>38||sat>22)continue;
+      const lN=L[p-4*w],lS=L[p+4*w],lW=L[p-4],lE=L[p+4];
+      const maxAxis=Math.max(0.5*(lN+lS)-lum,0.5*(lW+lE)-lum);
+      if((lum<20&&sat<14)||maxAxis>14){
+        const score=Math.min(1,Math.max(0,(38-lum)/18));
+        F[p]=score;
+        if(score>0.5){
+          const i=p*4;
+          inkCnt++;ir+=d[i];ig+=d[i+1];ib+=d[i+2];
+        }
+      }
+    }
+  }
+  if(inkCnt<12)return null;
+  const ISO=0.52;
+  const A=new Uint8Array(N);
+  for(let p=0;p<N;p++)if(F[p]>=ISO)A[p]=1;
+
+  const subPt=(vx,vy)=>{
+    const x0=Math.max(0,Math.min(w-1,vx-1)),x1=Math.max(0,Math.min(w-1,vx));
+    const y0=Math.max(0,Math.min(h-1,vy-1)),y1=Math.max(0,Math.min(h-1,vy));
+    const f00=F[y0*w+x0],f10=F[y0*w+x1],f01=F[y1*w+x0],f11=F[y1*w+x1];
+    const gx=(f10+f11)-(f00+f01),gy=(f01+f11)-(f00+f10);
+    const avg=(f00+f10+f01+f11)*0.25;
+    const g2=gx*gx+gy*gy;
+    if(g2>1e-4){
+      const step=Math.max(-0.42,Math.min(0.42,(ISO-avg)/Math.sqrt(g2)));
+      return [vx+step*(gx/Math.sqrt(g2)),vy+step*(gy/Math.sqrt(g2))];
+    }
+    return [vx,vy];
+  };
+
+  const add=(x,y,dir)=>{const v=(y*W1+x)*2;if(out[v]===0)out[v]=dir+1;else out[v+1]=dir+1};
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){
+    const p=y*w+x;if(!A[p])continue;
+    if(y===0||!A[p-w])add(x,y,0);
+    if(x===w-1||!A[p+1])add(x+1,y,1);
+    if(y===h-1||!A[p+w])add(x+1,y+1,2);
+    if(x===0||!A[p-1])add(x,y+1,3);
+  }
+  let path='';
+  for(let s=0;s<out.length;s++){
+    if(!out[s])continue;
+    let v=s>>1,pd=out[s]-1;out[s]=0;
+    const P=[];P.push(subPt(v%W1,(v/W1)|0));
+    v=pd===0?v+1:pd===1?v+W1:pd===2?v-1:v-W1;
+    for(;;){
+      const b=v*2;let sl;
+      if(out[b]&&out[b+1]){const dA=out[b]-1;sl=((dA-pd+4)%4===1)?b:((out[b+1]-1-pd+4)%4===1)?b+1:b}
+      else if(out[b])sl=b;else if(out[b+1])sl=b+1;else break;
+      const dir=out[sl]-1;out[sl]=0;
+      P.push(subPt(v%W1,(v/W1)|0));
+      pd=dir;v=dir===0?v+1:dir===1?v+W1:dir===2?v-1:v-W1;
+    }
+    if(P.length<6)continue;
+    let ar=0;for(let i=0;i<P.length;i++){const a=P[i],b=P[(i+1)%P.length];ar+=a[0]*b[1]-b[0]*a[1]}
+    ar=Math.abs(ar)/2;
+    if(ar<7)continue;
+    path+=buildSmoothRingPath(P,'ink');
+  }
+  if(!path)return null;
+  return {
+    path,
+    color:'rgb('+Math.round(ir/inkCnt)+','+Math.round(ig/inkCnt)+','+Math.round(ib/inkCnt)+')'
+  };
+}
+
+//TRACE-START
+// Unified Sub-Pixel Vector Engine: Outputs both SVG and Adobe Stock-Ready Pure EPS (%!PS-Adobe-3.0 EPSF-3.0)
+function traceVector(dIn,wIn,hIn,K,box,wantSVG,wantEPS){
+  let d=dIn,w=wIn,h=hIn,scaleX=1,scaleY=1,tmpCv=null;
+  // Memory & performance safety guard: if input exceeds 2560px on longest side, downsample for vector grid & scale geometry back
+  const maxSide=Math.max(wIn,hIn);
+  if(maxSide>2560){
+    const sc=2560/maxSide;
+    w=Math.max(16,Math.round(wIn*sc));
+    h=Math.max(16,Math.round(hIn*sc));
+    scaleX=wIn/w;scaleY=hIn/h;
+    const srcCv=mk(wIn,hIn);
+    srcCv.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(dIn),wIn,hIn),0,0);
+    tmpCv=mk(w,h);
+    const tctx=tmpCv.getContext('2d',{willReadFrequently:true});
+    tctx.imageSmoothingEnabled=true;tctx.imageSmoothingQuality='high';
+    tctx.drawImage(srcCv,0,0,w,h);
+    freeCv(srcCv);
+    d=tctx.getImageData(0,0,w,h).data;
+  }
+
+  const N=w*h;
+  const sm=new Uint8ClampedArray(d);
+  const tmp=new Uint8ClampedArray(d);
+  if(tmpCv)freeCv(tmpCv);
+
+  for(let pass=0;pass<3;pass++){
+    const src=pass%2===0?sm:tmp;
+    const dst=pass%2===0?tmp:sm;
+    dst.set(src);
+    for(let y=2;y<h-2;y++){
+      const row=y*w;
+      for(let x=2;x<w-2;x++){
+        const p=row+x,i=p*4;
+        if(src[i+3]<128)continue;
+        const r0=src[i],g0=src[i+1],b0=src[i+2];
+        const lum0=0.299*r0+0.587*g0+0.114*b0;
+        if(lum0<28)continue;
+        let sr=r0*4,sg=g0*4,sb=b0*4,wt=4;
+        for(let dy=-2;dy<=2;dy++){
+          const r2=(y+dy)*w;
+          for(let dx=-2;dx<=2;dx++){
+            if(dx===0&&dy===0)continue;
+            const j=(r2+x+dx)*4;
+            if(src[j+3]<128)continue;
+            const ad=Math.abs(src[j]-r0)+Math.abs(src[j+1]-g0)+Math.abs(src[j+2]-b0);
+            if(ad<46){
+              const w2=(Math.abs(dx)<=1&&Math.abs(dy)<=1)?2:1;
+              sr+=src[j]*w2;sg+=src[j+1]*w2;sb+=src[j+2]*w2;wt+=w2;
+            }
+          }
+        }
+        dst[i]=(sr/wt+0.5)|0;dst[i+1]=(sg/wt+0.5)|0;dst[i+2]=(sb/wt+0.5)|0;
+      }
+    }
+  }
+
+  const L=new Float32Array(N),Sat=new Uint8Array(N),isInkPx=new Uint8Array(N);
+  let cnt=0;
+  for(let p=0;p<N;p++){
+    const i=p*4;
+    if(sm[i+3]<128){L[p]=255;continue}
+    cnt++;
+    const r=sm[i],g=sm[i+1],b=sm[i+2];
+    L[p]=0.299*r+0.587*g+0.114*b;
+    Sat[p]=Math.max(r,g,b)-Math.min(r,g,b);
+  }
+  if(!cnt)return null;
+
+  for(let y=0;y<h;y++){
+    const row=y*w;
+    for(let x=0;x<w;x++){
+      const p=row+x;
+      if(sm[p*4+3]<128)continue;
+      const lum=L[p],sat=Sat[p];
+      if(lum<28&&sat<22){isInkPx[p]=1;continue}
+      if(lum<48&&sat<28&&x>=3&&x<w-3&&y>=3&&y<h-3){
+        const lN=L[p-3*w],lS=L[p+3*w],lW=L[p-3],lE=L[p+3];
+        if(Math.max(0.5*(lN+lS)-lum,0.5*(lW+lE)-lum)>11)isInkPx[p]=1;
+      }
+    }
+  }
+
+  const extGuard=new Uint8Array(N);
+  const bgDist=new Uint8Array(N).fill(255),bq=new Int32Array(N);
+  let bqh=0,bqt=0;
+  for(let y=0;y<h;y++){
+    const row=y*w;
+    for(let x=0;x<w;x++){
+      const p=row+x;
+      if(sm[p*4+3]<128){
+        bgDist[p]=0;
+        if((x>0&&sm[(p-1)*4+3]>=128)||(x<w-1&&sm[(p+1)*4+3]>=128)||(y>0&&sm[(p-w)*4+3]>=128)||(y<h-1&&sm[(p+w)*4+3]>=128)){
+          bq[bqt++]=p;
+        }
+      }
+    }
+  }
+  while(bqh<bqt){
+    const p=bq[bqh++],dv=bgDist[p];
+    if(dv>=5)continue;
+    const x=p%w;
+    const nb=[x>0?p-1:-1,x<w-1?p+1:-1,p>=w?p-w:-1,p<N-w?p+w:-1];
+    for(let k=0;k<4;k++){
+      const r=nb[k];
+      if(r>=0&&bgDist[r]===255){
+        bgDist[r]=dv+1;
+        bq[bqt++]=r;
+      }
+    }
+  }
+  for(let p=0;p<N;p++){
+    if(bgDist[p]<=2||(bgDist[p]<=5&&isInkPx[p]))extGuard[p]=1;
+  }
+
+  const nearInk=new Uint8Array(N);
+  for(let y=1;y<h-1;y++){
+    const row=y*w;
+    for(let x=1;x<w-1;x++){
+      const p=row+x;
+      if(isInkPx[p]||extGuard[p]||sm[p*4+3]<128)continue;
+      if(isInkPx[p-1]||isInkPx[p+1]||isInkPx[p-w]||isInkPx[p+w]||isInkPx[p-w-1]||isInkPx[p-w+1]||isInkPx[p+w-1]||isInkPx[p+w+1]){
+        nearInk[p]=1;
+      }
+    }
+  }
+  for(let pass=0;pass<2;pass++){
+    for(let y=3;y<h-3;y++){
+      const row=y*w;
+      for(let x=3;y<h-3&&x<w-3;x++){
+        const p=row+x;
+        if(!nearInk[p])continue;
+        let bestQ=-1,bestLum=-1;
+        for(let dy=-3;dy<=3;dy++){
+          const r2=(y+dy)*w;
+          for(let dx=-3;dx<=3;dx++){
+            const q=r2+x+dx;
+            if(sm[q*4+3]<128||isInkPx[q]||nearInk[q]||extGuard[q])continue;
+            if(L[q]>bestLum){bestLum=L[q];bestQ=q}
+          }
+        }
+        if(bestQ>=0){
+          const i=p*4,j=bestQ*4;
+          sm[i]=sm[j];sm[i+1]=sm[j+1];sm[i+2]=sm[j+2];
+          L[p]=L[bestQ];Sat[p]=Sat[bestQ];
+        }
+      }
+    }
+  }
+
+  const S=[],step=Math.max(1,Math.floor(cnt/45000));
+  const inkS=[],fillS=[];
+  for(let p=0,c=0;p<N;p++)if(sm[p*4+3]>=128){
+    if(c++%step===0){
+      const i=p*4;
+      S.push(i);
+      if(isInkPx[p])inkS.push(i);else if(!nearInk[p])fillS.push(i);
+    }
+  }
+  // Safe fallback for pure black/monochrome logos where fillS might be empty
+  const hasInk=inkS.length>15&&fillS.length>15;
+  const src0=fillS.length>15?fillS:S,KK=hasInk?Math.max(2,K-1):K;
+  let boxes=[src0];
+  while(boxes.length<KK){
+    let bi=-1,best=0,bc=0;
+    boxes.forEach((b,k)=>{if(b.length<2)return;
+      for(let c=0;c<3;c++){let mn=255,mx=0;for(const i of b){const v=sm[i+c];if(v<mn)mn=v;if(v>mx)mx=v}
+        const r=(mx-mn)*Math.pow(b.length,0.42);if(r>best){best=r;bi=k;bc=c}}});
+    if(bi<0)break;
+    const b=boxes[bi].sort((p,q)=>sm[p+bc]-sm[q+bc]),m=b.length>>1;
+    boxes.splice(bi,1,b.slice(0,m),b.slice(m));
+  }
+  let pal=boxes.filter(b=>b.length>0).map(b=>{let r=0,g=0,l=0;for(const i of b){r+=sm[i];g+=sm[i+1];l+=sm[i+2]}const n=b.length;return [r/n,g/n,l/n,n]});
+  if(!pal.length)pal=[[0,0,0,1]];
+  pal.sort((a,b)=>b[3]-a[3]);
+  pal=pal.map(c=>[c[0],c[1],c[2]]);
+  let nf=pal.length;
+  const nearest=(r,g,b)=>{let bk=0,bd=1e9;for(let k=0;k<nf;k++){const q=pal[k],e=0.3*(q[0]-r)**2+0.59*(q[1]-g)**2+0.11*(q[2]-b)**2+0.25*((q[0]-r)**2+(q[1]-g)**2+(q[2]-b)**2);if(e<bd){bd=e;bk=k}}return bk};
+  for(let it=0;it<4;it++){
+    const acc=pal.map(()=>[0,0,0,0]);
+    for(const i of src0){const a=acc[nearest(sm[i],sm[i+1],sm[i+2])];a[0]+=sm[i];a[1]+=sm[i+1];a[2]+=sm[i+2];a[3]++}
+    pal=pal.map((c,k)=>acc[k][3]?[acc[k][0]/acc[k][3],acc[k][1]/acc[k][3],acc[k][2]/acc[k][3]]:c);
+  }
+
+  const minDist2=31*31;
+  const mergedPal=[];
+  for(let k=0;k<pal.length;k++){
+    const c=pal[k];
+    let found=-1;
+    for(let j=0;j<mergedPal.length;j++){
+      const m=mergedPal[j];
+      const dr=c[0]-m[0],dg=c[1]-m[1],db=c[2]-m[2];
+      const d2=dr*dr+dg*dg+db*db;
+      if(d2<minDist2){found=j;break}
+    }
+    if(found<0)mergedPal.push(c);
+  }
+  pal=mergedPal;
+  nf=pal.length;
+
+  let inkIdx=-1;
+  if(hasInk){
+    let r=0,g=0,l=0;for(const i of inkS){r+=sm[i];g+=sm[i+1];l+=sm[i+2]}
+    const n=inkS.length;inkIdx=pal.length;
+    pal.push([Math.min(18,r/n),Math.min(18,g/n),Math.min(20,l/n)]);
+  }
+
+  const lut=new Int16Array(32768).fill(-1),idx=new Uint8Array(N).fill(255);
+  for(let p=0;p<N;p++){
+    const i=p*4;if(sm[i+3]<128)continue;
+    if(inkIdx>=0&&isInkPx[p]){idx[p]=inkIdx;continue}
+    const key=((sm[i]>>3)<<10)|((sm[i+1]>>3)<<5)|(sm[i+2]>>3);let k=lut[key];
+    if(k<0){k=nearest((sm[i]&248)+4,(sm[i+1]&248)+4,(sm[i+2]&248)+4);lut[key]=k}
+    idx[p]=k;
+  }
+
+  const idx2=new Uint8Array(idx),hist=new Uint32Array(256),of=[];
+  for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++)of.push(dy*w+dx);
+  const NO=of.length;
+  for(let pass=0;pass<3;pass++){
+    for(let y=2;y<h-2;y++)for(let x=2;x<w-2;x++){
+      const p=y*w+x,c0=idx[p];
+      if(c0===255||c0===inkIdx)continue;
+      for(let j=0;j<NO;j++){const v=idx[p+of[j]];if(v!==255&&v!==inkIdx)hist[v]++}
+      let bv=c0,bc=hist[c0];
+      for(let j=0;j<NO;j++){const v=idx[p+of[j]];if(v!==255&&v!==inkIdx&&hist[v]>bc){bc=hist[v];bv=v}}
+      for(let j=0;j<NO;j++){const v=idx[p+of[j]];if(v!==255)hist[v]=0}
+      idx2[p]=bv;
+    }
+    idx.set(idx2);
+  }
+
+  for(let stage=0;stage<2;stage++){
+    const seen=new Uint8Array(N),st=new Int32Array(N),comp=new Int32Array(N);
+    const minIsl=stage===0?140:Math.max(180,Math.min(420,Math.round(cnt*0.0009)));
+    for(let s=0;s<N;s++){
+      const c0=idx2[s];
+      if(c0===255||c0===inkIdx||seen[s])continue;
+      let sp=0,n=0,perim=0;
+      seen[s]=1;st[sp++]=s;
+      while(sp){
+        const p=st[--sp];comp[n++]=p;
+        const x=p%w;
+        const nb=[x>0?p-1:-1,x<w-1?p+1:-1,p>=w?p-w:-1,p<N-w?p+w:-1];
+        for(let k=0;k<4;k++){
+          const r=nb[k];if(r<0)continue;
+          const cr=idx2[r];
+          if(cr===c0){if(!seen[r]){seen[r]=1;st[sp++]=r}}
+          else{
+            perim++;
+            if(cr!==255&&cr!==inkIdx)hist[cr]++;
+          }
+        }
+      }
+      const isThinSliver=(n<minIsl*2.4&&(n/Math.max(1,perim))<1.35);
+      if(n<=minIsl||isThinSliver){
+        let bestNb=-1,bestCnt=0;
+        for(let k=0;k<n;k++){
+          const p=comp[k],x=p%w;
+          const nb=[x>0?p-1:-1,x<w-1?p+1:-1,p>=w?p-w:-1,p<N-w?p+w:-1];
+          for(let j=0;j<4;j++){
+            const r=nb[j];if(r<0)continue;
+            const cr=idx2[r];
+            if(cr!==c0&&cr!==255&&cr!==inkIdx&&hist[cr]>bestCnt){
+              bestCnt=hist[cr];bestNb=cr;
+            }
+          }
+        }
+        for(let k=0;k<n;k++){
+          const p=comp[k],x=p%w;
+          if(x>0)hist[idx2[p-1]]=0;if(x<w-1)hist[idx2[p+1]]=0;
+          if(p>=w)hist[idx2[p-w]]=0;if(p<N-w)hist[idx2[p+w]]=0;
+        }
+        if(bestNb>=0){
+          if(n<=minIsl){
+            for(let k=0;k<n;k++)idx2[comp[k]]=bestNb;
+          }else{
+            const cA=pal[c0],cB=pal[bestNb];
+            const dist=(cA[0]-cB[0])**2+(cA[1]-cB[1])**2+(cA[2]-cB[2])**2;
+            if(dist<58*58){
+              for(let k=0;k<n;k++)idx2[comp[k]]=bestNb;
+            }
+          }
+        }
+      }else{
+        for(let k=0;k<n;k++){
+          const p=comp[k],x=p%w;
+          if(x>0)hist[idx2[p-1]]=0;if(x<w-1)hist[idx2[p+1]]=0;
+          if(p>=w)hist[idx2[p-w]]=0;if(p<N-w)hist[idx2[p+w]]=0;
+        }
+      }
+    }
+  }
+
+  const area=new Float64Array(pal.length);
+  for(let p=0;p<N;p++)if(idx2[p]!==255)area[idx2[p]]++;
+  const fillOrder=[...pal.keys()].filter(k=>k!==inkIdx&&area[k]>0).sort((a,b)=>area[b]-area[a]);
+  const order=inkIdx>=0&&area[inkIdx]>0?[...fillOrder,inkIdx]:fillOrder;
+  const rank=new Uint8Array(256);order.forEach((k,r)=>rank[k]=r+1);
+  const R2=new Uint8Array(N);
+  for(let p=0;p<N;p++)if(idx2[p]!==255)R2[p]=rank[idx2[p]];
+
+  const vb=box?[box[0],box[1],box[2]-box[0]+1,box[3]-box[1]+1]:[0,0,wIn,hIn];
+  const ox=vb[0],oy=vb[1],BW=vb[2],BH=vb[3];
+
+  const W1=w+1,out=new Uint8Array(W1*(h+1)*2);
+  const hex=c=>'#'+c.map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join('');
+  const psCol=c=>c.map(v=>Math.max(0,Math.min(1,v/255)).toFixed(4)).join(' ')+' rg\n';
+  const add=(x,y,dir)=>{const v=(y*W1+x)*2;if(out[v]===0)out[v]=dir+1;else out[v+1]=dir+1};
+
+  let svgBody='',epsBody='';
+
+  const masterRings=silRings(d,w,h);
+  const hasMasterInk=inkIdx>=0&&area[inkIdx]>0;
+  if(masterRings.length&&order.length){
+    const baseC=hasMasterInk?pal[inkIdx]:pal[order[0]];
+    if(wantSVG){
+      let sp='';
+      for(const P of masterRings)sp+=buildSmoothRingPath(P,'sil',scaleX,scaleY);
+      if(sp)svgBody+='<path fill="'+hex(baseC)+'" fill-rule="evenodd" d="'+sp+'"/>\n';
+    }
+    if(wantEPS){
+      let ep='';
+      for(const P of masterRings)ep+=buildSmoothRingEPS(P,'sil',ox,oy,BH,scaleX,scaleY);
+      if(ep)epsBody+=psCol(baseC)+'np\n'+ep+'eofill\n';
+    }
+  }
+
+  const M=new Uint8Array(N),M2=new Uint8Array(N);
+  const F=new Float32Array(N),T=new Float32Array(N);
+  const subPtLayer=(vx,vy)=>{
+    const x0=Math.max(0,Math.min(w-1,vx-1)),x1=Math.max(0,Math.min(w-1,vx));
+    const y0=Math.max(0,Math.min(h-1,vy-1)),y1=Math.max(0,Math.min(h-1,vy));
+    const f00=F[y0*w+x0],f10=F[y0*w+x1],f01=F[y1*w+x0],f11=F[y1*w+x1];
+    const gx=(f10+f11)-(f00+f01),gy=(f01+f11)-(f00+f10);
+    const avg=(f00+f10+f01+f11)*0.25;
+    const g2=gx*gx+gy*gy;
+    if(g2>1e-4){
+      const step=Math.max(-0.42,Math.min(0.42,(0.5-avg)/Math.sqrt(g2)));
+      return [vx+step*(gx/Math.sqrt(g2)),vy+step*(gy/Math.sqrt(g2))];
+    }
+    return [vx,vy];
+  };
+
+  const startR=hasMasterInk?1:2;
+  for(let r=startR;r<=order.length;r++){
+    const palIdx=order[r-1];
+    const isInkLayer=palIdx===inkIdx;
+
+    M.fill(0);
+    if(isInkLayer){
+      for(let p=0;p<N;p++)if(R2[p]===r&&bgDist[p]>1)M[p]=1;
+    }else{
+      for(let p=0;p<N;p++)if(R2[p]===r&&!extGuard[p])M[p]=1;
+      M2.set(M);
+      for(let y=1;y<h-1;y++){
+        const row=y*w;
+        for(let x=1;x<w-1;x++){
+          const p=row+x;
+          if(M[p]||R2[p]<=r||extGuard[p])continue;
+          if(M[p-1]||M[p+1]||M[p-w]||M[p+w]||M[p-w-1]||M[p-w+1]||M[p+w-1]||M[p+w+1])M2[p]=1;
+        }
+      }
+      M.set(M2);
+    }
+
+    for(let p=0;p<N;p++)F[p]=M[p]?1:0;
+    for(let y=0;y<h;y++){const row=y*w;for(let x=0;x<w;x++){const p=row+x;T[p]=(F[x>0?p-1:p]+2*F[p]+F[x<w-1?p+1:p])*0.25}}
+    for(let y=0;y<h;y++)for(let x=0;x<w;x++){const p=y*w+x;F[p]=(T[y>0?p-w:p]+2*T[p]+T[y<h-1?p+w:p])*0.25}
+
+    out.fill(0);
+    for(let y=0;y<h;y++)for(let x=0;x<w;x++){
+      const p=y*w+x;
+      if(!M[p])continue;
+      if(y===0||!M[p-w])add(x,y,0);
+      if(x===w-1||!M[p+1])add(x+1,y,1);
+      if(y===h-1||!M[p+w])add(x+1,y+1,2);
+      if(x===0||!M[p-1])add(x,y+1,3);
+    }
+    let svgPath='',epsPath='';
+    const mode=isInkLayer?'ink':'fill';
+    for(let s=0;s<out.length;s++){
+      if(!out[s])continue;
+      let v=s>>1,pd=out[s]-1;out[s]=0;
+      const P=[];P.push(subPtLayer(v%W1,(v/W1)|0));
+      v=pd===0?v+1:pd===1?v+W1:pd===2?v-1:v-W1;
+      for(;;){const b=v*2;let sl;
+        if(out[b]&&out[b+1]){const dA=out[b]-1;sl=((dA-pd+4)%4===1)?b:((out[b+1]-1-pd+4)%4===1)?b+1:b}
+        else if(out[b])sl=b;else if(out[b+1])sl=b+1;else break;
+        const dir=out[sl]-1;out[sl]=0;
+        P.push(subPtLayer(v%W1,(v/W1)|0));
+        pd=dir;v=dir===0?v+1:dir===1?v+W1:dir===2?v-1:v-W1}
+      const minLen=isInkLayer?6:8;
+      if(P.length<minLen)continue;
+      let ar=0;for(let i=0;i<P.length;i++){const a=P[i],b=P[(i+1)%P.length];ar+=a[0]*b[1]-b[0]*a[1]}
+      ar=Math.abs(ar)/2;
+      if(ar<(isInkLayer?6:22))continue;
+      if(wantSVG)svgPath+=buildSmoothRingPath(P,mode,scaleX,scaleY);
+      if(wantEPS)epsPath+=buildSmoothRingEPS(P,mode,ox,oy,BH,scaleX,scaleY);
+    }
+    const cArr=pal[palIdx];
+    if(wantSVG&&svgPath){
+      const col=hex(cArr);
+      svgBody+='<path fill="'+col+'" fill-rule="evenodd" d="'+svgPath+'"/>\n';
+    }
+    if(wantEPS&&epsPath){
+      epsBody+=psCol(cArr)+'np\n'+epsPath+'eofill\n';
+    }
+  }
+
+  const svgOut=wantSVG?('<svg xmlns="http://www.w3.org/2000/svg" width="'+BW+'" height="'+BH+'" viewBox="'+vb.join(' ')+'" shape-rendering="geometricPrecision">\n'+svgBody+'</svg>'):null;
+
+  let epsOut=null;
+  if(wantEPS){
+    epsOut=[
+      '%!PS-Adobe-3.0 EPSF-3.0',
+      '%%Creator: BG Vanish Pro Studio 8K (Adobe Stock Vector Engine)',
+      '%%Title: Pure Vector Illustration',
+      '%%BoundingBox: 0 0 '+BW+' '+BH,
+      '%%HiResBoundingBox: 0.0000 0.0000 '+BW.toFixed(4)+' '+BH.toFixed(4),
+      '%%LanguageLevel: 3',
+      '%%Pages: 1',
+      '%%DocumentData: Clean7Bit',
+      '%%EndComments',
+      '%%BeginProlog',
+      '/m { moveto } bind def',
+      '/l { lineto } bind def',
+      '/c { curveto } bind def',
+      '/cp { closepath } bind def',
+      '/np { newpath } bind def',
+      '/rg { setrgbcolor } bind def',
+      '%%EndProlog',
+      '%%Page: 1 1',
+      'gsave',
+      epsBody.trim(),
+      'grestore',
+      'showpage',
+      '%%EOF'
+    ].join('\n');
+  }
+  return {svg:svgOut,eps:epsOut};
+}
+//TRACE-END
+
+const $=id=>document.getElementById(id),sleep=ms=>new Promise(r=>setTimeout(r,ms));
+let items=[],runId=0;
+const drop=$('drop'),fileIn=$('file');
+drop.onclick=()=>fileIn.click();
+fileIn.onchange=e=>{add([...e.target.files]);fileIn.value=''};
+['dragover','dragenter'].forEach(t=>drop.addEventListener(t,e=>{e.preventDefault();drop.classList.add('on')}));
+['dragleave','drop'].forEach(t=>drop.addEventListener(t,e=>{e.preventDefault();drop.classList.remove('on')}));
+drop.addEventListener('drop',e=>add([...e.dataTransfer.files]));
+// Support Ctrl+V direct clipboard image paste anywhere on page
+window.addEventListener('paste',e=>{
+  if(ED&&!$('ed').hidden)return;
+  const fl=[...(e.clipboardData?.files||[])];
+  if(fl.length)add(fl);
+});
+$('tol').oninput=e=>$('tolv').textContent=e.target.value;
+$('sens').oninput=e=>$('sensv').textContent=e.target.value;
+$('halo').oninput=e=>$('halov').textContent=e.target.value;
+$('owid').oninput=e=>$('owidv').textContent=e.target.value==='0'?'অটো':e.target.value;
+$('stkw').oninput=e=>$('stkwv').textContent=e.target.value;
+$('e-r').oninput=e=>$('e-rv').textContent=e.target.value;
+$('warnf').onclick=()=>{$('grid').classList.toggle('only');$('warnf').classList.toggle('on')};
+$('redo').onclick=()=>runAll();
+$('clearall').onclick=()=>{items.forEach(freeItem);items=[];$('grid').innerHTML='';$('stat').textContent='';refresh()};
+$('zip').onclick=()=>makeZip('all');$('zipok').onclick=()=>makeZip('ok');$('zipsus').onclick=()=>makeZip('sus');$('delsus').onclick=delSus;
+let rt=null;const auto=()=>{if(!items.length)return;clearTimeout(rt);rt=setTimeout(runAll,350)};
+['fmt','cols','up','holes','smooth','pad','tol','sens','halo','ofix','owid','vpng','oline','inkvec','denoise','pop','stk','stkw'].forEach(id=>$(id).addEventListener('change',auto));
+function freeItem(i){(i.files||[]).forEach(f=>URL.revokeObjectURL(f.url));i.purl&&URL.revokeObjectURL(i.purl)}
+
+function add(files){
+  files=files.filter(f=>f.type.startsWith('image/')||/\.svg$/i.test(f.name));
+  if(!files.length)return;
+  const seen={};
+  items.forEach(it=>{const b=it.base.replace(/_\d+$/,'');seen[b]=(seen[b]||0)+1});
+  const newItems=files.map(f=>{
+    const base=f.name.replace(/\.[^.]+$/,'');seen[base]=(seen[base]||0)+1;
+    return {file:f,base:base+(seen[base]>1?'_'+seen[base]:''),files:null,purl:null,edits:[],sus:0};
+  });
+  newItems.forEach(it=>{
+    const d=document.createElement('div');d.className='item';
+    d.innerHTML='<div class="th">অপেক্ষা…</div><div class="meta"><span></span></div>';
+    d.querySelector('.meta span').textContent=it.file.name;
+    it.el=d;$('grid').appendChild(d);
+  });
+  items.push(...newItems);
+  runAll();
+}
+
+const curO=()=>{
+  const padVal=+$('pad').value;
+  return {
+    tol:+$('tol').value,holes:$('holes').checked,smooth:$('smooth').checked,
+    trim:padVal>=0,pad:padVal,up:+$('up').value,fmt:$('fmt').value,colors:+$('cols').value,
+    sens:+$('sens').value,halo:+$('halo').value,ofix:+$('ofix').value,owid:+$('owid').value,
+    vpng:$('vpng').checked,oline:+$('oline').value,inkvec:$('inkvec').checked,
+    denoise:$('denoise').checked,pop:$('pop').checked,stk:+$('stk').value,stkw:+$('stkw').value
+  };
+};
+
+async function doItem(it,o){
+  try{
+    const r=await process(it.file,o,it.edits);
+    freeItem(it);
+    it.files=r.files.map(f=>({ext:f.ext,blob:f.blob,url:URL.createObjectURL(f.blob),name:it.base+'_nobg.'+f.ext}));
+    it.purl=URL.createObjectURL(r.prev);it.sus=it.rev?0:r.sus;
+    it.el.classList.toggle('warn',it.sus>0);
+    it.el.innerHTML='<div class="th" style="cursor:pointer" title="এডিট করতে ক্লিক করুন"><img alt=""></div><div class="meta"><span></span><b class="lk"></b><i class="xx" title="তালিকা থেকে বাদ দিন" style="cursor:pointer;font-style:normal;padding:0 4px">✕</i></div>';
+    it.el.querySelector('img').src=it.purl;
+    it.el.querySelector('.th').onclick=()=>openEd(it);it.el.querySelector('.xx').onclick=()=>{removeItem(it);refresh()};
+    it.el.querySelector('span').textContent=(it.sus?'⚠️'+it.sus+' · ':'')+it.file.name+' · '+r.dim+(o.holes&&!r.svg?' · ফাঁকা '+r.gaps:'')+(r.ofx?' · ✎outline ঠিক':'');
+    const lk=it.el.querySelector('.lk');
+    it.files.forEach(f=>{const a=document.createElement('a');a.href=f.url;a.download=f.name;a.textContent=f.ext.toUpperCase();a.style.marginLeft='6px';lk.appendChild(a)});
+    return true;
+  }catch(e){it.files=null;it.el.querySelector('.th').textContent='Error: '+(e.message||'failed');return false}
+}
+
+async function runAll(){
+  const my=++runId,o=curO();
+  $('zip').disabled=$('redo').disabled=$('zipok').disabled=$('zipsus').disabled=$('delsus').disabled=$('clearall').disabled=true;
+  const bar=$('bar'),bi=$('barin');bar.style.display='block';bi.style.width='0';
+  const t0=performance.now();let ok=0;
+  for(let n=0;n<items.length;n++){
+    if(my!==runId)return;
+    $('stat').textContent='প্রসেস হচ্ছে '+(n+1)+' / '+items.length+' …';
+    if(await doItem(items[n],o))ok++;
+    bi.style.width=((n+1)/items.length*100)+'%';
+    await sleep(0);
+  }
+  if(my!==runId)return;
+  [...items].reverse().filter(i=>i.sus).forEach(i=>$('grid').prepend(i.el));
+  const mb=items.reduce((s,i)=>s+(i.files?i.files.reduce((t,f)=>t+f.blob.size,0):0),0)/1048576,wn=items.filter(i=>i.sus).length;
+  $('stat').textContent='শেষ: '+ok+'/'+items.length+' ছবি · '+((performance.now()-t0)/1000).toFixed(1)+'s · মোট ~'+mb.toFixed(0)+' MB'+(wn?' · ⚠️ '+wn+'টি ছবিতে সন্দেহজনক ফাঁক (আগে দেখানো হয়েছে)':'');
+  $('redo').disabled=$('clearall').disabled=false;refresh();
+  setTimeout(()=>bar.style.display='none',600);
+}
+
+const tb=c=>new Promise((res,rej)=>c.toBlob(b=>b?res(b):rej(new Error('canvas too large for this device')),'image/png'));
+function loadImg(file){return new Promise((res,rej)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{URL.revokeObjectURL(u);res(im)};im.onerror=()=>{URL.revokeObjectURL(u);rej(new Error('load failed'))};im.src=u})}
+const mk=(w,h)=>{const c=document.createElement('canvas');c.width=w;c.height=h;return c};
+const freeCv=c=>{if(c){c.width=0;c.height=0}};
+
+// Post-Edit Morphological Despurring, Ink-Edge Shaving & Cut-Boundary Sealing:
+// Cleans up tiny hooks, spurs, and leftover anti-aliased fringe along the outline after manual click/brush edits
+function postEditClean(d,orig,w,h,roi){
+  const N=w*h;
+  const xMin=roi?Math.max(1,roi[0]-4):1,yMin=roi?Math.max(1,roi[1]-4):1;
+  const xMax=roi?Math.min(w-2,roi[2]+4):w-2,yMax=roi?Math.min(h-2,roi[3]+4):h-2;
+  const isOrigInk=p=>{
+    const i=p*4,r=orig[i],g=orig[i+1],b=orig[i+2];
+    return (0.299*r+0.587*g+0.114*b)<48&&(Math.max(r,g,b)-Math.min(r,g,b))<36;
+  };
+  // 1. Shave off 1-3px protruding hooks/spurs that have >= 5 transparent 8-neighbors
+  for(let pass=0;pass<4;pass++){
+    const rem=[];
+    for(let y=yMin;y<=yMax;y++){
+      const row=y*w;
+      for(let x=xMin;x<=xMax;x++){
+        const p=row+x;
+        if(d[p*4+3]<16)continue;
+        let bg8=0,bg4=0;
+        if(d[(p-1)*4+3]<32){bg8++;bg4++}
+        if(d[(p+1)*4+3]<32){bg8++;bg4++}
+        if(d[(p-w)*4+3]<32){bg8++;bg4++}
+        if(d[(p+w)*4+3]<32){bg8++;bg4++}
+        if(d[(p-w-1)*4+3]<32)bg8++;
+        if(d[(p-w+1)*4+3]<32)bg8++;
+        if(d[(p+w-1)*4+3]<32)bg8++;
+        if(d[(p+w+1)*4+3]<32)bg8++;
+        if(bg8>=5||(bg4>=2&&!isOrigInk(p)&&(isOrigInk(p-1)||isOrigInk(p+1)||isOrigInk(p-w)||isOrigInk(p+w)))){
+          rem.push(p);
+        }
+      }
+    }
+    if(!rem.length)break;
+    for(const p of rem)d[p*4+3]=0;
+  }
+
+  if(roi)return; // Skip full-image island scan during live ROI brush drag
+
+  // 2. Remove tiny isolated floating islands (< 45px) left behind after erasing a limb/paw
+  const seen=new Uint8Array(N),st=new Int32Array(N),comp=new Int32Array(60);
+  for(let s=0;s<N;s++){
+    if(d[s*4+3]<16||seen[s])continue;
+    let sp=0,n=0;seen[s]=1;st[sp++]=s;
+    while(sp){
+      const p=st[--sp];
+      if(n<60)comp[n]=p;
+      n++;
+      const x=p%w;
+      const nb=[x>0?p-1:-1,x<w-1?p+1:-1,p>=w?p-w:-1,p<N-w?p+w:-1];
+      for(let k=0;k<4;k++){
+        const r=nb[k];
+        if(r>=0&&!seen[r]&&d[r*4+3]>=16){seen[r]=1;st[sp++]=r}
+      }
+    }
+    if(n<45){
+      for(let k=0;k<n;k++)d[comp[k]*4+3]=0;
+    }
+  }
+}
+
+function autoFill(d,orig,w,h,x0,y0,minT){
+  const N=w*h,s0=y0*w+x0;if(x0<0||y0<0||x0>=w||y0>=h||d[s0*4+3]===0)return;
+  const lm=i=>0.299*d[i]+0.587*d[i+1]+0.114*d[i+2];
+  const origInk=p=>{
+    const i=p*4,r=orig[i],g=orig[i+1],b=orig[i+2];
+    return (0.299*r+0.587*g+0.114*b)<46&&(Math.max(r,g,b)-Math.min(r,g,b))<34;
+  };
+  let sr=0,sg=0,sb=0,sc=0,ao=0;
+  for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const xx=x0+dx,yy=y0+dy;if(xx<0||yy<0||xx>=w||yy>=h)continue;const i=(yy*w+xx)*4;if(d[i+3]>0){sr+=d[i];sg+=d[i+1];sb+=d[i+2];sc++}}
+  sr/=sc;sg/=sc;sb/=sc;
+  for(let p=0;p<N;p++)if(d[p*4+3]>0)ao++;
+  const seedInk=lm(s0*4)<42,seen=new Uint8Array(N),stk=new Int32Array(N),L=new Int32Array(N);
+  const flood=(t,cap)=>{seen.fill(0);const t2=t*t;let sp=0,n=0;stk[sp++]=s0;seen[s0]=1;
+    while(sp){const p=stk[--sp];L[n++]=p;if(n>cap)return -1;const x=p%w;
+      for(const r of [x>0?p-1:-1,x<w-1?p+1:-1,p>=w?p-w:-1,p<N-w?p+w:-1]){
+        if(r<0||seen[r])continue;const i=r*4;if(d[i+3]===0||(!seedInk&&(lm(i)<42||origInk(r))))continue;
+        const a=d[i]-sr,b=d[i+1]-sg,c=d[i+2]-sb;if(a*a+b*b+c*c<=t2){seen[r]=1;stk[sp++]=r}}}
+    return n};
+  const Ts=[12,18,26,36,50,68,92].filter(t=>t>=minT);if(!Ts.length)Ts.push(minT);
+  let selT=Ts[0],prev=flood(selT,ao*0.5);
+  if(prev<0)return;
+  for(let k=1;k<Ts.length;k++){const n=flood(Ts[k],prev*2.5+300);if(n<0)break;selT=Ts[k];prev=n}
+  let n=flood(selT,N);
+  for(let k=0;k<n;k++)d[L[k]*4+3]=0;
+
+  // Absorb 1-2px anti-aliased transition fringe right against the ink wall (O(N) safe indexing)
+  for(let pass=0;pass<2;pass++){
+    const fringe=[];
+    for(let k=0;k<n;k++){
+      const p=L[k],x=p%w;
+      for(const r of [x>0?p-1:-1,x<w-1?p+1:-1,p>=w?p-w:-1,p<N-w?p+w:-1]){
+        if(r<0||seen[r]||d[r*4+3]===0)continue;
+        const i=r*4;
+        if(!seedInk&&!origInk(r)&&lm(i)>=42){
+          const a=d[i]-sr,b=d[i+1]-sg,c=d[i+2]-sb;
+          if(a*a+b*b+c*c<=(selT+28)*(selT+28)){
+            seen[r]=1;fringe.push(r);
+          }
+        }
+      }
+    }
+    for(let j=0;j<fringe.length;j++){
+      const r=fringe[j];
+      d[r*4+3]=0;
+      if(n<N)L[n++]=r;
+    }
+  }
+
+  const ring=[];
+  for(let k=0;k<n;k++){const p=L[k],x=p%w;
+    for(const r of [x>0?p-1:-1,x<w-1?p+1:-1,p>=w?p-w:-1,p<N-w?p+w:-1]){if(r<0||seen[r]||d[r*4+3]===0)continue;seen[r]=2;ring.push(r)}}
+  for(const r of ring){
+    const i=r*4;
+    if(origInk(r)||lm(i)<45){
+      d[i]=Math.min(d[i],18);d[i+1]=Math.min(d[i+1],18);d[i+2]=Math.min(d[i+2],20);d[i+3]=255;
+      continue;
+    }
+    const a=d[i]-sr,b=d[i+1]-sg,c=d[i+2]-sb,D=Math.sqrt(a*a+b*b+c*c),f=Math.max(0,Math.min(1,(D-selT)/(selT+10)));
+    if(f>=1)continue;
+    const x=r%w,y=(r/w)|0;let bq=-1,bd=99;
+    for(let dy=-3;dy<=3;dy++){const yy=y+dy;if(yy<0||yy>=h)continue;for(let dx=-3;dx<=3;dx++){const xx=x+dx;if(xx<0||xx>=w)continue;const q=yy*w+xx,e2=dx*dx+dy*dy;
+      if(seen[q]===0&&d[q*4+3]>=128&&e2<bd){bd=e2;bq=q}}}
+    if(bq>=0){d[i]=d[bq*4];d[i+1]=d[bq*4+1];d[i+2]=d[bq*4+2]}
+    d[i+3]=Math.round(d[i+3]*f);
+  }
+  postEditClean(d,orig,w,h);
+}
+
+function restoreRegion(d,orig,w,h,x0,y0){
+  const N=w*h,s0=y0*w+x0;if(x0<0||y0<0||x0>=w||y0>=h)return false;
+  const di=new Uint8Array(N).fill(255),q=new Int32Array(N);let qh=0,qt=0;
+  for(let p=0;p<N;p++){
+    const i=p*4,lum=0.299*orig[i]+0.587*orig[i+1]+0.114*orig[i+2],sat=Math.max(orig[i],orig[i+1],orig[i+2])-Math.min(orig[i],orig[i+1],orig[i+2]);
+    if(lum<42&&sat<30){di[p]=0;q[qt++]=p}
+  }
+  if(di[s0]===0)return false;
+  while(qh<qt){const p=q[qh++],v=di[p];if(v>=6)continue;const x=p%w;
+    for(const r of [x>0?p-1:-1,x<w-1?p+1:-1,p>=w?p-w:-1,p<N-w?p+w:-1])if(r>=0&&di[r]===255){di[r]=v+1;q[qt++]=r}}
+  const seen=new Uint8Array(N),stk=new Int32Array(N),L=new Int32Array(N);
+  for(const g of [0,1,2,3,4,6]){
+    seen.fill(0);let sp=0,n=0,leak=false;stk[sp++]=s0;seen[s0]=1;
+    while(sp){const p=stk[--sp];L[n++]=p;const x=p%w,y=(p/w)|0;
+      if(x===0||y===0||x===w-1||y===h-1||n>N*0.5){leak=true;break}
+      for(const r of [x>0?p-1:-1,x<w-1?p+1:-1,p>=w?p-w:-1,p<N-w?p+w:-1]){if(r<0||seen[r]||di[r]<=g)continue;seen[r]=1;stk[sp++]=r}}
+    if(leak)continue;
+    const add=[];let fr=[];
+    if(g>0){for(let k=0;k<n;k++){const p=L[k],x=p%w;
+      for(const r of [x>0?p-1:-1,x<w-1?p+1:-1,p>=w?p-w:-1,p<N-w?p+w:-1])if(r>=0&&!seen[r]&&di[r]>0){fr.push(p);break}}}
+    for(let s=0;s<g;s++){const nx=[];
+      for(const p of fr){const x=p%w;
+        for(const r of [x>0?p-1:-1,x<w-1?p+1:-1,p>=w?p-w:-1,p<N-w?p+w:-1]){if(r<0||seen[r]||di[r]===0)continue;seen[r]=1;nx.push(r);add.push(r)}}
+      fr=nx}
+    const put=p=>{const i=p*4;d[i]=orig[i];d[i+1]=orig[i+1];d[i+2]=orig[i+2];d[i+3]=255};
+    for(let k=0;k<n;k++)put(L[k]);
+    for(const p of add)put(p);
+    return true;
+  }
+  return false;
+}
+
+function paintDisk(d,orig,w,h,cx,cy,r,erase,smart){
+  const r2=r*r;
+  const centerIdx=(Math.max(0,Math.min(h-1,cy))*w+Math.max(0,Math.min(w-1,cx)))*4;
+  const centerLum=0.299*orig[centerIdx]+0.587*orig[centerIdx+1]+0.114*orig[centerIdx+2];
+  const protectInk=smart&&erase&&centerLum>52;
+  for(let y=Math.max(0,cy-r);y<=Math.min(h-1,cy+r);y++){
+    for(let x=Math.max(0,cx-r);x<=Math.min(w-1,cx+r);x++){
+      const d2=(x-cx)*(x-cx)+(y-cy)*(y-cy);
+      if(d2>r2)continue;
+      const p=y*w+x,i=p*4;
+      if(erase){
+        if(protectInk){
+          const lum=0.299*orig[i]+0.587*orig[i+1]+0.114*orig[i+2];
+          const sat=Math.max(orig[i],orig[i+1],orig[i+2])-Math.min(orig[i],orig[i+1],orig[i+2]);
+          if(lum<34&&sat<26&&d2>r2*0.25)continue;
+        }
+        const dist=Math.sqrt(d2);
+        if(dist>r-1.5){
+          const f=Math.max(0,(r-dist)/1.5);
+          d[i+3]=Math.min(d[i+3],Math.round(d[i+3]*(1-f)));
+        }else{
+          d[i+3]=0;
+        }
+      }else{
+        d[i]=orig[i];d[i+1]=orig[i+1];d[i+2]=orig[i+2];d[i+3]=255;
+      }
+    }
+  }
+}
+
+function applyEdit(d,orig,w,h,e){
+  if(e.t==='r')return restoreRegion(d,orig,w,h,e.x,e.y);
+  if(e.t==='a'){autoFill(d,orig,w,h,e.x,e.y,e.min||0);return}
+  const N=w*h;
+  if(e.t==='b'||e.t==='e'){
+    const r=e.r,pts=e.pts,er=e.t==='e',sm=!!e.sm;
+    let rx0=w,ry0=h,rx1=0,ry1=0;
+    for(let k=0;k<pts.length;k++){
+      const [x1,y1]=pts[k];
+      if(x1-r<rx0)rx0=x1-r;if(x1+r>rx1)rx1=x1+r;
+      if(y1-r<ry0)ry0=y1-r;if(y1+r>ry1)ry1=y1+r;
+      if(k===0){paintDisk(d,orig,w,h,x1,y1,r,er,sm);continue}
+      const [x0,y0]=pts[k-1],dist=Math.hypot(x1-x0,y1-y0),steps=Math.max(1,Math.ceil(dist/Math.max(1,r*0.35)));
+      for(let s=1;s<=steps;s++){
+        const tx=Math.round(x0+(x1-x0)*(s/steps)),ty=Math.round(y0+(y1-y0)*(s/steps));
+        paintDisk(d,orig,w,h,tx,ty,r,er,sm);
+      }
+    }
+    if(er){
+      if(e.live)postEditClean(d,orig,w,h,[rx0,ry0,rx1,ry1]);
+      else postEditClean(d,orig,w,h);
+    }
+    return;
+  }
+  const s0=e.y*w+e.x,s=s0*4;if(d[s+3]===0)return;
+  const tr=d[s],tg=d[s+1],tbl=d[s+2],t2=e.tol*e.tol,l2=t2*2.2,seen=new Uint8Array(N),stk=[s0],L=[];seen[s0]=1;
+  while(stk.length){const p=stk.pop();L.push(p);const x=p%w;
+    for(const r of [x>0?p-1:-1,x<w-1?p+1:-1,p>=w?p-w:-1,p<N-w?p+w:-1]){
+      if(r<0||seen[r])continue;const i=r*4;if(d[i+3]===0)continue;
+      const a=d[i]-tr,b=d[i+1]-tg,c=d[i+2]-tbl;if(a*a+b*b+c*c<=t2){seen[r]=1;stk.push(r)}}}
+  const ed=[];
+  for(const p of L){d[p*4+3]=0;const x=p%w;
+    for(const r of [x>0?p-1:-1,x<w-1?p+1:-1,p>=w?p-w:-1,p<N-w?p+w:-1]){
+      if(r<0||seen[r]||d[r*4+3]===0)continue;const i=r*4,a=d[i]-tr,b=d[i+1]-tg,c=d[i+2]-tbl;
+      if(a*a+b*b+c*c<=l2){seen[r]=1;ed.push(r)}}}
+  for(const p of ed)d[p*4+3]=0;
+  postEditClean(d,orig,w,h);
+}
+
+function bbox(d,w,h){
+  let x0=w,y0=h,x1=-1,y1=-1;
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++)if(d[(y*w+x)*4+3]>8){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}
+  if(x1<x0)return [0,0,w-1,h-1];
+  return [x0,y0,x1,y1];
+}
+
+function outlineFix(d,w,h,mode,ow,forceSeal=false){
+  const N=w*h,S=new Uint8Array(N);
+  for(let p=0;p<N;p++)if(d[p*4+3]>=128)S[p]=1;
+  const ink=p=>{const i=p*4,r=d[i],g=d[i+1],b=d[i+2];return (0.299*r+0.587*g+0.114*b)<38&&(Math.max(r,g,b)-Math.min(r,g,b))<26};
+  const nb=p=>{const x=p%w;return [x>0?p-1:-1,x<w-1?p+1:-1,p>=w?p-w:-1,p<N-w?p+w:-1]};
+  const dp=new Uint8Array(N).fill(255),q=new Int32Array(N);let qh=0,qt=0,E=0;
+  for(let p=0;p<N;p++)if(S[p]){const nn=nb(p);for(let k=0;k<4;k++){const r=nn[k];if(r>=0&&!S[r]){dp[p]=1;q[qt++]=p;E++;break}}}
+  if(E<20)return 0;
+  while(qh<qt){const p=q[qh++],v=dp[p];if(v>=8)continue;const nn=nb(p);for(let k=0;k<4;k++){const r=nn[k];if(r>=0&&S[r]&&dp[r]===255){dp[r]=v+1;q[qt++]=r}}}
+  let cov=0,ir=0,ig=0,ib=0,ic=0;const runs=[];
+  for(let i=0;i<E;i++){const p=q[i];let cv=ink(p);
+    if(!cv){const nn=nb(p);for(let k=0;k<4;k++){const r=nn[k];if(r>=0&&S[r]&&dp[r]===2&&ink(r)){cv=true;break}}}
+    if(cv)cov++;
+    if(ink(p)){ir+=d[p*4];ig+=d[p*4+1];ib+=d[p*4+2];ic++;
+      if(i%7===0){let c=p,n=1;while(n<8){let f=-1;const nn=nb(c);for(let k=0;k<4;k++){const r=nn[k];if(r>=0&&S[r]&&dp[r]===n+1&&ink(r)){f=r;break}}if(f<0)break;c=f;n++}runs.push(n)}}}
+  cov/=E;
+  if(ic<10)return 0;
+  if(!forceSeal&&mode===1&&!(cov>0.25&&cov<0.97))return 0;
+  if(!forceSeal&&mode===2&&cov<0.05)return 0;
+  if(forceSeal&&cov<0.20)return 0;
+  runs.sort((a,b)=>a-b);
+  const t=Math.max(1.2,Math.min(5,ow>0?ow:(runs.length?runs[runs.length>>1]:2.0))),c0=[ir/ic,ig/ic,ib/ic];
+  for(let i=0;i<qt;i++){const p=q[i],v=dp[p];if(v>Math.ceil(t))break;if(ink(p))continue;
+    const f=Math.max(0,Math.min(1,t-(v-1))),k=p*4;
+    d[k]+=(c0[0]-d[k])*f;d[k+1]+=(c0[1]-d[k+1])*f;d[k+2]+=(c0[2]-d[k+2])*f}
+  const nf=[];
+  for(let p=0;p<N;p++)if(!S[p]){const x=p%w,c=(x>0&&S[p-1]?1:0)+(x<w-1&&S[p+1]?1:0)+(p>=w&&S[p-w]?1:0)+(p<N-w&&S[p+w]?1:0);if(c>=3)nf.push(p)}
+  for(const p of nf){const k=p*4;d[k]=c0[0];d[k+1]=c0[1];d[k+2]=c0[2];d[k+3]=255}
+  return 1;
+}
+
+function outlineInfo(d,w,h,ow){
+  const N=w*h,S=new Uint8Array(N);
+  for(let p=0;p<N;p++)S[p]=d[p*4+3]>=128?1:0;
+  const ink=p=>{const i=p*4,r=d[i],g=d[i+1],b=d[i+2];return (0.299*r+0.587*g+0.114*b)<42&&(Math.max(r,g,b)-Math.min(r,g,b))<28};
+  const nb=p=>{const x=p%w;return [x>0?p-1:-1,x<w-1?p+1:-1,p>=w?p-w:-1,p<N-w?p+w:-1]};
+  const dp=new Uint8Array(N).fill(255),q=new Int32Array(N);let qh=0,qt=0,E=0;
+  for(let p=0;p<N;p++)if(S[p]){const nn=nb(p);for(let k=0;k<4;k++){const r=nn[k];if(r>=0&&!S[r]){dp[p]=1;q[qt++]=p;E++;break}}}
+  if(E<20)return null;
+  while(qh<qt){const p=q[qh++],v=dp[p];if(v>=8)continue;const nn=nb(p);for(let k=0;k<4;k++){const r=nn[k];if(r>=0&&S[r]&&dp[r]===255){dp[r]=v+1;q[qt++]=r}}}
+  let ir=0,ig=0,ib=0,ic=0;const runs=[];
+  for(let i=0;i<E;i++){const p=q[i];if(!ink(p))continue;ir+=d[p*4];ig+=d[p*4+1];ib+=d[p*4+2];ic++;
+    if(i%5===0){let c=p,n=1;while(n<8){let f=-1;const nn=nb(c);for(let k=0;k<4;k++){const r=nn[k];if(r>=0&&S[r]&&dp[r]===n+1&&ink(r)){f=r;break}}if(f<0)break;c=f;n++}runs.push(n)}}
+  if(ic<Math.max(10,E*0.04))return null;
+  runs.sort((a,b)=>a-b);
+  const mean=runs.length?runs.reduce((a,c)=>a+c,0)/runs.length:2,base=ow>0?ow:mean/1.22;
+  return {t:Math.max(1.2,Math.min(8,base)),color:'rgb('+Math.round(ir/ic)+','+Math.round(ig/ic)+','+Math.round(ib/ic)+')'};
+}
+
+function silRings(d,w,h){
+  const N=w*h,W1=w+1,out=new Uint8Array(W1*(h+1)*2);
+  const F=new Float32Array(N),T=new Float32Array(N);
+  for(let p=0;p<N;p++)F[p]=d[p*4+3]/255;
+  for(let pass=0;pass<2;pass++){
+    for(let y=0;y<h;y++){const r=y*w;for(let x=0;x<w;x++){const p=r+x;T[p]=(F[x>0?p-1:p]+2*F[p]+F[x<w-1?p+1:p])*0.25}}
+    for(let y=0;y<h;y++)for(let x=0;x<w;x++){const p=y*w+x;F[p]=(T[y>0?p-w:p]+2*T[p]+T[y<h-1?p+w:p])*0.25}
+  }
+  const ISO=0.56;
+  const A=new Uint8Array(N);
+  for(let p=0;p<N;p++)A[p]=F[p]>=ISO?1:0;
+
+  const subPt=(vx,vy)=>{
+    const x0=Math.max(0,Math.min(w-1,vx-1)),x1=Math.max(0,Math.min(w-1,vx));
+    const y0=Math.max(0,Math.min(h-1,vy-1)),y1=Math.max(0,Math.min(h-1,vy));
+    const f00=F[y0*w+x0],f10=F[y0*w+x1],f01=F[y1*w+x0],f11=F[y1*w+x1];
+    const gx=(f10+f11)-(f00+f01),gy=(f01+f11)-(f00+f10);
+    const avg=(f00+f10+f01+f11)*0.25;
+    const g2=gx*gx+gy*gy;
+    if(g2>1e-4){
+      const step=Math.max(-0.45,Math.min(0.45,(ISO-avg)/Math.sqrt(g2)));
+      return [vx+step*(gx/Math.sqrt(g2)),vy+step*(gy/Math.sqrt(g2))];
+    }
+    return [vx,vy];
+  };
+
+  const add=(x,y,dir)=>{const v=(y*W1+x)*2;if(out[v]===0)out[v]=dir+1;else out[v+1]=dir+1};
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){const p=y*w+x;if(!A[p])continue;
+    if(y===0||!A[p-w])add(x,y,0);
+    if(x===w-1||!A[p+1])add(x+1,y,1);
+    if(y===h-1||!A[p+w])add(x+1,y+1,2);
+    if(x===0||!A[p-1])add(x,y+1,3)}
+  const rings=[];
+  for(let s=0;s<out.length;s++){
+    if(!out[s])continue;
+    let v=s>>1,pd=out[s]-1;out[s]=0;
+    const P=[];P.push(subPt(v%W1,(v/W1)|0));
+    v=pd===0?v+1:pd===1?v+W1:pd===2?v-1:v-W1;
+    for(;;){const b=v*2;let sl;
+      if(out[b]&&out[b+1]){const dA=out[b]-1;sl=((dA-pd+4)%4===1)?b:((out[b+1]-1-pd+4)%4===1)?b+1:b}
+      else if(out[b])sl=b;else if(out[b+1])sl=b+1;else break;
+      const dir=out[sl]-1;out[sl]=0;
+      P.push(subPt(v%W1,(v/W1)|0));
+      pd=dir;v=dir===0?v+1:dir===1?v+W1:dir===2?v-1:v-W1}
+    if(P.length<8)continue;
+    let ar=0;for(let i=0;i<P.length;i++){const a=P[i],b=P[(i+1)%P.length];ar+=a[0]*b[1]-b[0]*a[1]}
+    ar=Math.abs(ar)/2;
+    if(ar<30||ar/P.length<0.6)continue;
+    rings.push(P);
+  }
+  return rings;
+}
+
+function silPath(d,w,h){
+  const rings=silRings(d,w,h);
+  let path='';
+  for(const P of rings)path+=buildSmoothRingPath(P,'sil');
+  return path;
+}
+
+function renderSmoothVectorOutline(targetCanvas,srcData,w,h,ox,oy,sx,sy,o){
+  const pStr=silPath(srcData,w,h);
+  if(!pStr)return;
+  const P2=new Path2D(pStr);
+  const inf=o.oline?outlineInfo(srcData,w,h,o.owid):null;
+  const inkVec=o.inkvec?interiorInkPath(srcData,w,h):null;
+  const W=targetCanvas.width,H=targetCanvas.height;
+  const scAvg=(sx+sy)*0.5;
+
+  const cSub=mk(W,H),g=cSub.getContext('2d');
+  g.imageSmoothingEnabled=true;g.imageSmoothingQuality='high';
+
+  const strokeCol=inf?(o.oline===2?inf.color:'#000'):'#000';
+  g.save();
+  g.setTransform(sx,0,0,sy,-ox*sx,-oy*sy);
+  g.fillStyle=strokeCol;
+  g.fill(P2,'evenodd');
+  g.restore();
+
+  g.globalCompositeOperation=inf?'source-atop':'source-in';
+  g.drawImage(targetCanvas,0,0);
+
+  if(inkVec){
+    const InkP=new Path2D(inkVec.path);
+    g.globalCompositeOperation='source-atop';
+    g.save();
+    g.setTransform(sx,0,0,sy,-ox*sx,-oy*sy);
+    g.fillStyle=o.oline===1?'#000':inkVec.color;
+    g.fill(InkP,'evenodd');
+    g.restore();
+  }
+
+  if(inf){
+    g.globalCompositeOperation='source-atop';
+    g.save();
+    g.setTransform(sx,0,0,sy,-ox*sx,-oy*sy);
+    g.lineJoin='round';g.lineCap='round';
+    g.lineWidth=Math.max(2.2,1.85*inf.t);
+    g.strokeStyle=strokeCol;
+    g.stroke(P2);
+    g.restore();
+  }
+
+  const tx=targetCanvas.getContext('2d');
+  tx.clearRect(0,0,W,H);
+
+  if(o.stk>0){
+    const sw=Math.max(2,o.stkw*3.2);
+    tx.save();
+    tx.setTransform(sx,0,0,sy,-ox*sx,-oy*sy);
+    tx.lineJoin='round';tx.lineCap='round';
+    if(o.stk===2||o.stk===3){
+      tx.shadowColor='rgba(15,18,24,0.38)';
+      tx.shadowBlur=Math.max(6,sw*0.95*scAvg);
+      tx.shadowOffsetY=Math.max(2,sw*0.28*scAvg);
+    }
+    if(o.stk===1||o.stk===2){
+      tx.strokeStyle='#ffffff';
+      tx.lineWidth=sw*2;
+      tx.stroke(P2);
+      tx.fillStyle='#ffffff';
+      tx.fill(P2,'evenodd');
+    }else if(o.stk===3){
+      tx.fillStyle='#000000';
+      tx.fill(P2,'evenodd');
+    }
+    tx.restore();
+
+    if(o.stk===2){
+      tx.save();
+      tx.setTransform(sx,0,0,sy,-ox*sx,-oy*sy);
+      tx.lineJoin='round';tx.lineCap='round';
+      tx.strokeStyle='#ffffff';
+      tx.lineWidth=sw*2;
+      tx.stroke(P2);
+      tx.fillStyle='#ffffff';
+      tx.fill(P2,'evenodd');
+      tx.restore();
+    }
+  }
+
+  tx.drawImage(cSub,0,0);
+  freeCv(cSub);
+}
+
+function calcCropBox(rawBox,w,h,o){
+  let [x0,y0,x1,y1]=rawBox;
+  const sw=o.stk>0?Math.max(2,o.stkw*3.2):0;
+  const padTopLeft=o.stk>0?Math.ceil(sw*2.2):0;
+  const padBotRight=o.stk>0?Math.ceil(sw*(o.stk>=2?2.8:2.2)):0;
+
+  if(!o.trim){
+    if(o.stk>0)return [-padTopLeft,-padTopLeft,w-1+padBotRight,h-1+padBotRight];
+    return [0,0,w-1,h-1];
+  }
+  x0-=padTopLeft;y0-=padTopLeft;x1+=padBotRight;y1+=padBotRight;
+  const bw=Math.max(1,x1-x0+1),bh=Math.max(1,y1-y0+1);
+  if(o.pad===100){
+    const side=Math.ceil(Math.max(bw,bh)*1.10);
+    const cx=(x0+x1)*0.5,cy=(y0+y1)*0.5;
+    const sx0=Math.round(cx-side*0.5),sy0=Math.round(cy-side*0.5);
+    return [sx0,sy0,sx0+side-1,sy0+side-1];
+  }
+  if(o.pad>0){
+    const mx=Math.ceil(bw*(o.pad/100)),my=Math.ceil(bh*(o.pad/100));
+    return [x0-mx,y0-my,x1+mx,y1+my];
+  }
+  return [x0,y0,x1,y1];
+}
+
+async function build(file,o,edits){
+  const im=await loadImg(file),w=im.naturalWidth,h=im.naturalHeight,cv=mk(w,h),cx=cv.getContext('2d',{willReadFrequently:true});
+  cx.drawImage(im,0,0);
+  const id=cx.getImageData(0,0,w,h),orig=new Uint8ClampedArray(id.data);
+  if(o.denoise||o.pop)studioEnhance(id.data,w,h,o.denoise,o.pop);
+  const r=removeBg(id.data,w,h,o);
+  const baseData=new Uint8ClampedArray(id.data);
+  const hasEdits=!!(edits&&edits.length);
+  for(const e of edits||[])applyEdit(id.data,orig,w,h,e);
+  if(hasEdits)postEditClean(id.data,orig,w,h);
+  const ofx=(o.ofix||hasEdits)?outlineFix(id.data,w,h,o.ofix||1,o.owid,hasEdits):0;
+  const rawBox=hasEdits?bbox(id.data,w,h):r.slice(0,4);
+  return {w,h,cv,cx,id,orig,baseData,ofx,box:rawBox,gaps:r[4],sus:r[6]};
+}
+
+const isSvg=f=>f.type==='image/svg+xml'||/\.svg$/i.test(f.name);
+async function process(file,o,edits){
+  if(isSvg(file))return processSvg(file,o);
+  const B=await build(file,o,edits),w=B.w,h=B.h,cv=B.cv,cx=B.cx,id=B.id,gaps=B.gaps,sus=B.sus.length;
+  const [x0,y0,x1,y1]=calcCropBox(B.box,w,h,o);
+  const bw=Math.max(1,x1-x0+1),bh=Math.max(1,y1-y0+1);
+  cx.putImageData(id,0,0);
+
+  const wantEPS=o.fmt==='eps'||o.fmt==='png_eps'||o.fmt==='all3';
+  const wantSVG=o.fmt==='svg'||o.fmt==='both'||o.fmt==='all3';
+  const wantPNG=o.fmt==='png'||o.fmt==='both'||o.fmt==='png_eps'||o.fmt==='all3';
+
+  let sb=null,eb=null,vecPrevBlob=null;
+  if(wantEPS||wantSVG||o.vpng){
+    const tr=traceVector(id.data,w,h,o.colors,[x0,y0,x1,y1],true,wantEPS);
+    if(!tr||!tr.svg){freeCv(cv);throw new Error('subject পাওয়া যায়নি')}
+    vecPrevBlob=new Blob([tr.svg],{type:'image/svg+xml'});
+    if(wantSVG)sb=vecPrevBlob;
+    if(wantEPS&&tr.eps)eb=new Blob([tr.eps],{type:'application/postscript'});
+
+    if(!wantPNG){
+      freeCv(cv);
+      const outFiles=[];
+      if(eb)outFiles.push({ext:'eps',blob:eb});
+      if(sb)outFiles.push({ext:'svg',blob:sb});
+      const lbl=eb&&sb?'EPS + SVG':eb?'EPS Vector (Adobe Stock)':'SVG Vector';
+      return {files:outFiles,prev:await svgPreview(vecPrevBlob),dim:lbl,gaps,sus,ofx:B.ofx};
+    }
+    if(o.vpng){
+      const sc=Math.min(Math.max(1,o.up?o.up/Math.max(bw,bh):1),Math.sqrt(130e6/(bw*bh))),tw=Math.max(1,Math.round(bw*sc)),th=Math.max(1,Math.round(bh*sc)),vc=mk(tw,th),vu=URL.createObjectURL(vecPrevBlob);
+      try{const im=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=()=>rej(new Error('svg render failed'));i.src=vu});vc.getContext('2d').drawImage(im,0,0,tw,th)}finally{URL.revokeObjectURL(vu)}
+      const vb=await tb(vc);freeCv(vc);freeCv(cv);
+      const outFiles=[];
+      if(eb)outFiles.push({ext:'eps',blob:eb});
+      if(sb)outFiles.push({ext:'svg',blob:sb});
+      outFiles.push({ext:'png',blob:vb});
+      return {files:outFiles,prev:await svgPreview(vecPrevBlob),dim:tw+'×'+th+(eb?' + EPS':'')+(sb?' + SVG':'')+' · ভেক্টর',gaps,sus,ofx:B.ofx};
+    }
+  }
+
+  let out=cv;
+  if(x0!==0||y0!==0||bw!==w||bh!==h){
+    out=mk(bw,bh);
+    out.getContext('2d').drawImage(cv,-x0,-y0);
+  }
+  let scale=o.up?o.up/Math.max(out.width,out.height):1;
+  scale=Math.min(scale,Math.sqrt(130e6/(out.width*out.height)));
+  let fin=out;
+  if(scale>1.01){
+    const tw=Math.max(1,Math.round(out.width*scale)),th=Math.max(1,Math.round(out.height*scale));
+    let cur=out;
+    while(cur.width<tw){
+      const nw=Math.min(tw,cur.width*2),nh=nw===tw?th:Math.max(1,Math.round(cur.height*nw/cur.width));
+      const nc=mk(nw,nh),c2=nc.getContext('2d');c2.imageSmoothingEnabled=true;c2.imageSmoothingQuality='high';
+      c2.drawImage(cur,0,0,nw,nh);
+      if(cur!==out&&cur!==cv)freeCv(cur);
+      cur=nc;
+    }
+    fin=cur;
+  }
+  if((o.smooth||o.oline||o.inkvec||o.stk>0)&&!o.vpng){
+    const sx=fin.width/out.width,sy=fin.height/out.height;
+    renderSmoothVectorOutline(fin,id.data,w,h,x0,y0,sx,sy,o);
+  }
+  const ps=Math.min(1,520/fin.width),pr=mk(Math.max(1,Math.round(fin.width*ps)),Math.max(1,Math.round(fin.height*ps)));
+  const pc=pr.getContext('2d');pc.imageSmoothingQuality='high';pc.drawImage(fin,0,0,pr.width,pr.height);
+  const prev=await tb(pr);freeCv(pr);
+
+  const blob=await tb(fin);
+  const dim=fin.width+'×'+fin.height;
+  if(fin!==out)freeCv(fin);
+  if(out!==cv)freeCv(out);
+  freeCv(cv);
+  const outFiles=[];
+  if(eb)outFiles.push({ext:'eps',blob:eb});
+  if(sb)outFiles.push({ext:'svg',blob:sb});
+  outFiles.push({ext:'png',blob});
+  return {files:outFiles,prev,dim:dim+(eb?' + EPS':'')+(sb?' + SVG':''),gaps,sus,ofx:B.ofx};
+}
+
+async function svgPreview(blob){
+  const u=URL.createObjectURL(blob);
+  try{
+    const im=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=()=>rej(new Error('svg render failed'));i.src=u});
+    const s=Math.min(1,520/im.naturalWidth),c=mk(Math.max(1,Math.round(im.naturalWidth*s)),Math.max(1,Math.round(im.naturalHeight*s)));
+    c.getContext('2d').drawImage(im,0,0,c.width,c.height);
+    const b=await tb(c);freeCv(c);return b;
+  }finally{URL.revokeObjectURL(u)}
+}
+
+async function processSvg(file,o){
+  const doc=new DOMParser().parseFromString(await file.text(),'image/svg+xml');
+  if(doc.querySelector('parsererror')||doc.documentElement.localName!=='svg')throw new Error('SVG পড়া যায়নি');
+  const root=document.importNode(doc.documentElement,true),ow=root.getAttribute('width'),oh=root.getAttribute('height');
+  let vb=(root.getAttribute('viewBox')||'').trim().split(/[\s,]+/).map(Number);
+  if(vb.length!==4||vb.some(v=>!isFinite(v))||vb[2]<=0||vb[3]<=0)vb=[0,0,parseFloat(ow)||1000,parseFloat(oh)||1000];
+  root.setAttribute('viewBox',vb.join(' '));root.setAttribute('width',vb[2]);root.setAttribute('height',vb[3]);
+  const host=document.createElement('div');host.style.cssText='position:fixed;left:-99999px;top:0;visibility:hidden';
+  root.querySelectorAll('script,foreignObject').forEach(e=>e.remove());
+  [root,...root.querySelectorAll('*')].forEach(e=>[...e.attributes].forEach(a=>{if(/^on/i.test(a.name))e.removeAttribute(a.name)}));
+  host.appendChild(root);document.body.appendChild(host);
+  let gone=0,out;
+  try{
+    const sr=root.getBoundingClientRect(),area=sr.width*sr.height;
+    const shapes=[...root.querySelectorAll('rect,path,polygon,polyline,ellipse,circle,image')].filter(e=>!e.closest('defs,clipPath,mask,pattern,symbol,marker'));
+    for(let idx=0;idx<Math.min(5,shapes.length);idx++){
+      const e=shapes[idx],r=e.getBoundingClientRect(),iw=Math.min(r.right,sr.right)-Math.max(r.left,sr.left),ih=Math.min(r.bottom,sr.bottom)-Math.max(r.top,sr.top);
+      if(iw>0&&ih>0&&iw*ih>=0.96*area){e.remove();gone++;break}
+    }
+    if(gone&&shapes.every(e=>!e.isConnected))throw new Error('ব্যাকগ্রাউন্ড মোছার পর কিছু বাকি নেই');
+    if(gone&&o.trim){try{const b=root.getBBox();if(b.width>0&&b.height>0){vb=[b.x,b.y,b.width,b.height];root.setAttribute('viewBox',vb.join(' '))}}catch(e){}}
+    root.setAttribute('width',(ow&&!/%/.test(ow)&&!o.trim)?ow:vb[2]);root.setAttribute('height',(oh&&!/%/.test(oh)&&!o.trim)?oh:vb[3]);
+    if(!root.getAttribute('xmlns'))root.setAttribute('xmlns','http://www.w3.org/2000/svg');
+    out=new XMLSerializer().serializeToString(root);
+  }finally{host.remove()}
+  const sb=new Blob([out],{type:'image/svg+xml'}),files=[];
+  const wantEPS=o.fmt==='eps'||o.fmt==='png_eps'||o.fmt==='all3';
+  const wantSVG=o.fmt==='svg'||o.fmt==='both'||o.fmt==='all3';
+  const wantPNG=o.fmt==='png'||o.fmt==='both'||o.fmt==='png_eps'||o.fmt==='all3';
+
+  if(wantSVG)files.push({ext:'svg',blob:sb});
+  if(wantEPS||wantPNG){
+    const u=URL.createObjectURL(sb);
+    try{
+      const im=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=()=>rej(new Error('svg render failed'));i.src=u});
+      const bw=vb[2],bh=vb[3];
+      if(wantEPS){
+        const rsc=Math.min(2048/Math.max(bw,bh),2),rw=Math.max(16,Math.round(bw*rsc)),rh=Math.max(16,Math.round(bh*rsc)),rc=mk(rw,rh);
+        const rctx=rc.getContext('2d',{willReadFrequently:true});rctx.drawImage(im,0,0,rw,rh);
+        const tr=traceVector(rctx.getImageData(0,0,rw,rh).data,rw,rh,o.colors,[0,0,rw-1,rh-1],false,true);
+        freeCv(rc);
+        if(tr&&tr.eps)files.push({ext:'eps',blob:new Blob([tr.eps],{type:'application/postscript'})});
+      }
+      if(wantPNG){
+        const sc=Math.min((o.up||Math.max(bw,bh))/Math.max(bw,bh),Math.sqrt(130e6/(bw*bh))),tw=Math.max(1,Math.round(bw*sc)),th=Math.max(1,Math.round(bh*sc)),c=mk(tw,th);
+        c.getContext('2d').drawImage(im,0,0,tw,th);files.push({ext:'png',blob:await tb(c)});freeCv(c);
+      }
+    }finally{URL.revokeObjectURL(u)}
+  }
+  return {files,prev:await svgPreview(sb),dim:gone?'SVG ভেক্টর':'SVG (ব্যাকগ্রাউন্ড শেপ মেলেনি)',gaps:gone,sus:gone?0:1,svg:true};
+}
+
+function refresh(){
+  const ok=items.filter(i=>i.files&&!(i.sus>0)).length,sus=items.filter(i=>i.files&&i.sus>0).length;
+  $('zipok').textContent='ঠিক ছবির ZIP ('+ok+')';$('zipsus').textContent='⚠️ ZIP ('+sus+')';$('delsus').textContent='⚠️ বাদ দিন';
+  $('zipok').disabled=!ok;$('zipsus').disabled=!sus;$('delsus').disabled=!sus;$('zip').disabled=!(ok+sus);$('clearall').disabled=!items.length;
+  const st=$('stat');st.textContent=st.textContent.replace(/ · ⚠️ \d+টি ছবি[^]*$/,sus?' · ⚠️ '+sus+'টি ছবি সন্দেহজনক':'');
+}
+function removeItem(i){freeItem(i);i.el.remove();items=items.filter(x=>x!==i)}
+let dc=0;
+function delSus(){
+  const s=items.filter(i=>i.sus>0);if(!s.length)return;
+  if(!dc){$('delsus').textContent='নিশ্চিত? আবার ক্লিক';dc=setTimeout(()=>{dc=0;refresh()},4000);return}
+  clearTimeout(dc);dc=0;s.forEach(removeItem);$('stat').textContent=s.length+'টি সন্দেহজনক ছবি তালিকা থেকে বাদ দেওয়া হয়েছে';refresh();
+}
+
+let ED=null,chkPat=null,spaceHeld=false;
+const bRing=$('b-ring');
+function getChkPattern(ctx){
+  if(!chkPat){
+    const p=mk(16,16),q=p.getContext('2d');
+    q.fillStyle='#ccc';q.fillRect(0,0,16,16);q.fillStyle='#fff';q.fillRect(0,0,8,8);q.fillRect(8,8,8,8);
+    chkPat=ctx.createPattern(p,'repeat');
+  }
+  return chkPat;
+}
+
+function updateZoomUI(){
+  if(!ED)return;
+  const c=$('e-c');
+  c.style.transform=`translate(${ED.px}px,${ED.py}px) scale(${ED.zm})`;
+  $('e-zv').textContent=Math.round(ED.zm*100)+'%';
+}
+
+async function openEd(it){
+  if(!it.files||isSvg(it.file))return;
+  ED={it,o:curO(),ed:(it.edits||[]).slice(),redo:[],mode:'c',B:null,oc:null,tc:null,ovc:null,susMap:null,zm:1,px:0,py:0};
+  setMode('c');
+  updateZoomUI();
+  $('e-cmp').value=100;$('ed').hidden=false;$('e-t').textContent='লোড হচ্ছে…';
+  await edLoad();
+}
+
+async function edLoad(){
+  const e=ED,B=await build(e.it.file,e.o,e.ed);
+  if(ED!==e)return;
+  if(e.oc)freeCv(e.oc);if(e.tc)freeCv(e.tc);if(e.ovc)freeCv(e.ovc);if(e.B&&e.B.cv)freeCv(e.B.cv);
+  e.B=B;
+  e.oc=mk(B.w,B.h);e.oc.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(B.orig),B.w,B.h),0,0);
+  e.tc=mk(B.w,B.h);
+  e.ovc=mk(B.w,B.h);
+  e.susMap=new Int16Array(B.w*B.h).fill(-1);
+  B.sus.forEach((s,idx)=>{for(const p of s.px)e.susMap[p]=idx});
+  edUpdateLayer();
+  edDraw();
+}
+
+// Instant in-memory replay of edits from cached baseData (0.01s Undo/Redo without re-running removeBg)
+function edReplayFromBase(){
+  if(!ED||!ED.B)return;
+  const B=ED.B;
+  B.id.data.set(B.baseData);
+  for(const e of ED.ed)applyEdit(B.id.data,B.orig,B.w,B.h,e);
+  if(ED.ed.length){
+    postEditClean(B.id.data,B.orig,B.w,B.h);
+    outlineFix(B.id.data,B.w,B.h,ED.o.ofix||1,ED.o.owid,true);
+  }else if(ED.o.ofix){
+    outlineFix(B.id.data,B.w,B.h,ED.o.ofix,ED.o.owid,false);
+  }
+  edUpdateLayer();
+  edDraw();
+}
+
+function edUpdateLayer(){
+  if(!ED||!ED.B)return;
+  const B=ED.B,tx=ED.tc.getContext('2d');
+  tx.putImageData(B.id,0,0);
+  if((ED.o.smooth||ED.o.oline||ED.o.inkvec||ED.o.stk>0)&&!ED.o.vpng&&!dn){
+    renderSmoothVectorOutline(ED.tc,B.id.data,B.w,B.h,0,0,1,1,ED.o);
+  }
+}
+
+function edDraw(){
+  if(!ED||!ED.B)return;
+  const B=ED.B,c=$('e-c');if(c.width!==B.w||c.height!==B.h){c.width=B.w;c.height=B.h}
+  const x=c.getContext('2d'),bg=$('e-bg').value,sp=Math.round(B.w*$('e-cmp').value/100);
+  x.fillStyle=bg==='chk'?getChkPattern(x):bg;
+  x.fillRect(0,0,B.w,B.h);
+  x.drawImage(ED.tc,0,0);
+  let live=0;
+  if(B.sus.length&&$('e-showsus').checked){
+    const ovx=ED.ovc.getContext('2d'),ov=ovx.createImageData(B.w,B.h),od=ov.data,d=B.id.data;
+    for(const s of B.sus){
+      let rem=0;
+      for(const p of s.px)if(d[p*4+3]>=128)rem++;
+      if(rem<s.px.length*0.55)continue;
+      live++;
+      for(const p of s.px){
+        if(d[p*4+3]<128)continue;
+        const i=p*4;od[i]=255;od[i+1]=140;od[i+2]=0;od[i+3]=145;
+      }
+    }
+    ovx.putImageData(ov,0,0);
+    x.drawImage(ED.ovc,0,0);
+  }
+  if(sp<B.w){x.drawImage(ED.oc,0,0,sp,B.h,0,0,sp,B.h);if(sp>0){x.fillStyle='#fff';x.fillRect(sp-1,0,3,B.h)}}
+  $('e-t').textContent='কমলা = সন্দেহজনক ফাঁক ('+live+'টি বাকি)। হুইল বা ➕/➖ দিয়ে জুম করুন, Spacebar চেপে ছবি সরান, এবং Ctrl+Z দিয়ে Undo করুন।';
+}
+
+const ec=$('e-c'),ewrap=$('e-wrap');let dn=false,panDn=false,panStart=[0,0],cur=null;
+const ept=e=>{const r=ec.getBoundingClientRect();return [Math.round((e.clientX-r.left)*ec.width/r.width),Math.round((e.clientY-r.top)*ec.height/r.height)]};
+
+function updateBrushRing(e){
+  if(!ED||!ED.B||$('ed').hidden||(ED.mode!=='b'&&ED.mode!=='e')||spaceHeld||panDn){
+    bRing.style.display='none';return;
+  }
+  const rect=ec.getBoundingClientRect();
+  if(e.clientX<rect.left||e.clientX>rect.right||e.clientY<rect.top||e.clientY>rect.bottom){
+    bRing.style.display='none';return;
+  }
+  const dPx=(+$('e-r').value*2)*(rect.width/ec.width);
+  bRing.style.width=Math.max(4,dPx)+'px';
+  bRing.style.height=Math.max(4,dPx)+'px';
+  bRing.style.left=e.clientX+'px';
+  bRing.style.top=e.clientY+'px';
+  bRing.style.borderColor=ED.mode==='e'?'rgba(255,95,162,.95)':'rgba(45,212,191,.95)';
+  bRing.style.display='block';
+}
+
+ewrap.addEventListener('pointermove',updateBrushRing);
+ewrap.addEventListener('pointerleave',()=>{bRing.style.display='none'});
+
+ewrap.addEventListener('wheel',e=>{
+  if(!ED)return;
+  e.preventDefault();
+  const factor=e.deltaY<0?1.22:1/1.22;
+  const nzm=Math.max(1,Math.min(8,ED.zm*factor));
+  if(nzm===1){ED.px=0;ED.py=0}
+  ED.zm=nzm;
+  updateZoomUI();
+  updateBrushRing(e);
+},{passive:false});
+
+$('e-zin').onclick=()=>{if(!ED)return;ED.zm=Math.min(8,ED.zm*1.35);updateZoomUI()};
+$('e-zout').onclick=()=>{if(!ED)return;ED.zm=Math.max(1,ED.zm/1.35);if(ED.zm===1){ED.px=0;ED.py=0}updateZoomUI()};
+$('e-zrst').onclick=()=>{if(!ED)return;ED.zm=1;ED.px=0;ED.py=0;updateZoomUI()};
+
+window.addEventListener('keydown',e=>{
+  if(!ED||$('ed').hidden)return;
+  if(e.code==='Space'&&!spaceHeld){spaceHeld=true;ec.style.cursor='grab';bRing.style.display='none';e.preventDefault()}
+  else if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'&&!e.shiftKey){e.preventDefault();$('e-u').click()}
+  else if((e.ctrlKey||e.metaKey)&&(e.key.toLowerCase()==='y'||(e.shiftKey&&e.key.toLowerCase()==='z'))){e.preventDefault();$('e-re').click()}
+  else if(e.key==='['){const r=$('e-r');r.value=Math.max(2,+r.value-3);$('e-rv').textContent=r.value}
+  else if(e.key===']'){const r=$('e-r');r.value=Math.min(90,+r.value+3);$('e-rv').textContent=r.value}
+  else if(e.key==='Escape'){closeEd()}
+});
+window.addEventListener('keyup',e=>{
+  if(e.code==='Space'){spaceHeld=false;if(ED)ec.style.cursor=ED.mode==='p'?'grab':'crosshair'}
+});
+
+ec.onpointerdown=e=>{
+  if(!ED||!ED.B)return;e.preventDefault();
+  try{ec.setPointerCapture(e.pointerId)}catch(err){}
+  if(ED.mode==='p'||spaceHeld||e.button===1){
+    panDn=true;panStart=[e.clientX-ED.px,e.clientY-ED.py];
+    ec.style.cursor='grabbing';bRing.style.display='none';
+    return;
+  }
+  const [x,y]=ept(e),B=ED.B;
+  if(x<0||y<0||x>=B.w||y>=B.h)return;
+  if(ED.mode==='c'){
+    const sIdx=ED.susMap[y*B.w+x],s=(sIdx>=0&&B.id.data[(y*B.w+x)*4+3]!==0)?B.sus[sIdx]:null;
+    const ed=$('e-auto').checked?(s?{t:'a',x,y,min:ED.o.tol*0.6}:{t:'a',x,y,min:0}):(s?{t:'f',x,y,tol:ED.o.tol*0.9}:{t:'f',x,y,tol:Math.max(18,ED.o.tol*0.6)});
+    applyEdit(B.id.data,B.orig,B.w,B.h,ed);
+    outlineFix(B.id.data,B.w,B.h,ED.o.ofix||1,ED.o.owid,true);
+    ED.ed.push(ed);ED.redo=[];
+    edUpdateLayer();edDraw();
+  }else if(ED.mode==='e'){
+    dn=true;cur={t:'e',r:+$('e-r').value,sm:$('e-auto').checked,pts:[[x,y]]};
+    applyEdit(B.id.data,B.orig,B.w,B.h,{t:'e',r:cur.r,sm:cur.sm,live:true,pts:[[x,y]]});
+    edUpdateLayer();edDraw();
+  }else if($('e-auto').checked){
+    const ed={t:'r',x,y};
+    if(applyEdit(B.id.data,B.orig,B.w,B.h,ed)){ED.ed.push(ed);ED.redo=[];edUpdateLayer();edDraw()}
+    else{edDraw();$('e-t').textContent='অংশটা ভরা গেল না: outline খোলা, অথবা ক্লিক outline-এর ওপরে। outline-এর ভেতরের জায়গায় ক্লিক করুন, বা "অটো বাউন্ডারি" বন্ধ করে ব্রাশ নিন।'}
+  }else{
+    dn=true;cur={t:'b',r:+$('e-r').value,pts:[[x,y]]};
+    applyEdit(B.id.data,B.orig,B.w,B.h,{t:'b',r:cur.r,pts:[[x,y]]});
+    edUpdateLayer();edDraw();
+  }
+};
+ec.onpointermove=e=>{
+  if(!ED||!ED.B)return;
+  if(panDn){
+    ED.px=e.clientX-panStart[0];
+    ED.py=e.clientY-panStart[1];
+    updateZoomUI();
+    return;
+  }
+  if(!dn)return;
+  const p=ept(e),prev=cur.pts[cur.pts.length-1];
+  cur.pts.push(p);
+  applyEdit(ED.B.id.data,ED.B.orig,ED.B.w,ED.B.h,{t:cur.t,r:cur.r,sm:cur.sm,live:true,pts:[prev,p]});
+  edUpdateLayer();edDraw();
+};
+ec.onpointerup=ec.onpointercancel=()=>{
+  if(panDn){panDn=false;ec.style.cursor=(ED&&ED.mode==='p')||spaceHeld?'grab':'crosshair';return}
+  if(dn){
+    dn=false;
+    if(cur.t==='e'){
+      postEditClean(ED.B.id.data,ED.B.orig,ED.B.w,ED.B.h);
+      outlineFix(ED.B.id.data,ED.B.w,ED.B.h,ED.o.ofix||1,ED.o.owid,true);
+    }
+    ED.ed.push(cur);ED.redo=[];
+    edUpdateLayer();edDraw();
+  }
+};
+const setMode=m=>{
+  if(ED)ED.mode=m;
+  $('e-m1').classList.toggle('on',m==='c');
+  $('e-m2').classList.toggle('on',m==='b');
+  $('e-m3').classList.toggle('on',m==='e');
+  $('e-m4').classList.toggle('on',m==='p');
+  $('e-c').style.cursor=m==='p'?'grab':'crosshair';
+  if(m!=='b'&&m!=='e')bRing.style.display='none';
+};
+$('e-m1').onclick=()=>setMode('c');
+$('e-m2').onclick=()=>setMode('b');
+$('e-m3').onclick=()=>setMode('e');
+$('e-m4').onclick=()=>setMode('p');
+$('e-bg').onchange=edDraw;$('e-cmp').oninput=edDraw;$('e-showsus').onchange=edDraw;
+$('e-all').onclick=()=>{if(!ED||!ED.B)return;const B=ED.B;let n=0;for(const s of B.sus){if(B.id.data[s.p*4+3]===0)continue;const ed={t:'a',x:s.p%B.w,y:(s.p/B.w)|0,min:ED.o.tol*0.6};applyEdit(B.id.data,B.orig,B.w,B.h,ed);ED.ed.push(ed);n++}if(n){outlineFix(B.id.data,B.w,B.h,ED.o.ofix||1,ED.o.owid,true);ED.redo=[];edUpdateLayer();edDraw()}};
+$('e-u').onclick=()=>{if(ED&&ED.ed.length){ED.redo.push(ED.ed.pop());edReplayFromBase()}};
+$('e-re').onclick=()=>{if(ED&&ED.redo.length){ED.ed.push(ED.redo.pop());edReplayFromBase()}};
+function closeEd(){if(ED){freeCv(ED.oc);freeCv(ED.tc);freeCv(ED.ovc);freeCv(ED.B&&ED.B.cv)}ED=null;spaceHeld=false;bRing.style.display='none';$('ed').hidden=true}
+$('e-x').onclick=closeEd;
+$('e-ok').onclick=async()=>{if(!ED)return;const it=ED.it,ed=ED.ed;closeEd();it.edits=ed;it.rev=true;it.el.querySelector('.th').textContent='আপডেট হচ্ছে…';await doItem(it,curO());refresh()};
+
+async function makeZip(sel){
+  const ready=items.filter(i=>sel==='all'||(sel==='sus'?i.sus>0:!(i.sus>0))).flatMap(i=>i.files||[]),parts=[];
+  if(!ready.length){$('stat').textContent='এই তালিকায় কোনো ফাইল নেই';return}
+  if(typeof JSZip==='undefined'){
+    $('stat').textContent='অফলাইন মোডে এককভাবে ডাউনলোড হচ্ছে…';
+    for(const it of ready){const a=document.createElement('a');a.href=it.url;a.download=it.name;a.click();await sleep(250)}
+    return;
+  }
+  let cur=[],sz=0;
+  for(const it of ready){
+    if(cur.length&&sz+it.blob.size>350e6){parts.push(cur);cur=[];sz=0}
+    cur.push(it);sz+=it.blob.size;
+  }
+  if(cur.length)parts.push(cur);
+  $('zip').disabled=$('zipok').disabled=$('zipsus').disabled=true;
+  for(let p=0;p<parts.length;p++){
+    $('zip').textContent='ZIP '+(p+1)+'/'+parts.length+' বানাচ্ছি…';
+    const z=new JSZip();parts[p].forEach(it=>z.file(it.name,it.blob));
+    const b=await z.generateAsync({type:'blob',compression:'STORE'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(b);
+    const pre=sel==='sus'?'suspicious':sel==='ok'?'clean':'background_removed';a.download=parts.length>1?pre+'_part'+(p+1)+'.zip':pre+'.zip';
+    a.click();await sleep(1200);URL.revokeObjectURL(a.href);
+  }
+  $('zip').textContent='ZIP ডাউনলোড';refresh();
+}
+</script>
+</body>
+</html>
